@@ -8,22 +8,22 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Import Specification', link: '/import-specification' }
     ],
 
     sidebar: [
       {
-        text: 'Examples',
+        text: 'XML Import Specification',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'Getting Started', link: '/import-specification#getting-started' },
         ]
       }
     ],
 
     socialLinks: [
-      { icon: 'url', link: 'https://rera.cy' },
-      { icon: 'github', link: 'https://github.com/reraltd/xml-feed-specification' }
+      { icon: 'github', link: 'https://github.com/reraltd/xml-feed-specification' },
+      { icon: 'linkedin', link: 'https://www.linkedin.com/company/rera-cy/' },
+      { icon: 'instagram', link: 'https://www.instagram.com/rera.cy/' },
     ]
   }
 })
