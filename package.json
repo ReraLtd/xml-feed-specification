@@ -1,0 +1,18 @@
+{
+  "name": "@reraltd/xml-feed-specification",
+  "version": "1.0.0",
+  "description": "RERA XML feed specification",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "keywords": ["rera", "xml", "feed", "specification", "real estate", "property"],
+  "author": "Emil Rakhmatullin <it@rera.cy>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.3",
+  "devDependencies": {
+    "vitepress": "2.0.0-alpha.12"
+  }
+}
