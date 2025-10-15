@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root>
+  <rera>
+    <feed_version>1</feed_version>
+  </rera>
+  <contact_details>
+    <whatsapp_number>+35799999999</whatsapp_number>
+    <phone_number>+35799999999</phone_number>
+  </contact_details>
+  <listing>
+    <id>40001</id>
+    <ref>SALE_COM_LAND_001</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>commercial</offer_type>
+    <price>750000</price>
+    <old_price>820000</old_price>
+    <currency>EUR</currency>
+    <full_area>0</full_area>
+    <plot_area>2500</plot_area>
+    <building_density>0.6</building_density>
+    <created_at>2025-01-05 10:00:00</created_at>
+    <updated_at>2025-01-15 15:30:00</updated_at>
+    <title>Prime commercial development plot</title>
+    <description>Excellent commercial development opportunity in high-traffic business district. Perfect for retail, office complex, or mixed-use development. All utilities available.</description>
+    <city>Limassol</city>
+    <pin_map>
+      <latitude>34.689154</latitude>
+      <longitude>33.031578</longitude>
+      <formatted_address>Franklin Roosevelt Ave, Limassol 3012, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/40001001_large.jpg</url>
+      </image>
+      <image>
+        <tags>
+          <tag>floorplan</tag>
+        </tags>
+        <url>http://cdn.rera.cy/40001002_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/40001003_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>street</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>walkable</distance_to_bus_stops>
+      <plus_vat>1</plus_vat>
+      <negotiable_price>1</negotiable_price>
+      <commercial_type>land_plot</commercial_type>
+      <legal_status>freehold</legal_status>
+      <advertising_installation_allowed>yes</advertising_installation_allowed>
+      <foot_traffic>high</foot_traffic>
+      <commercial_planning_zone>eb3</commercial_planning_zone>
+      <commercial_plot_type>office_building</commercial_plot_type>
+    </attributes>
+  </listing>
+  <listing>
+    <id>40002</id>
+    <ref>SALE_COM_LAND_002</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>commercial</offer_type>
+    <price>450000</price>
+    <currency>EUR</currency>
+    <full_area>0</full_area>
+    <plot_area>1800</plot_area>
+    <building_density>0.8</building_density>
+    <created_at>2025-01-08 11:20:00</created_at>
+    <updated_at>2025-01-15 12:10:00</updated_at>
+    <title>Retail development land in shopping district</title>
+    <description>Strategic location for retail development in established shopping area. High visibility, excellent road access, near major shopping centers and residential areas.</description>
+    <city>Nicosia</city>
+    <pin_map>
+      <latitude>35.152463</latitude>
+      <longitude>33.368896</longitude>
+      <formatted_address>Griva Digeni Ave 89, Nicosia 1080, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/40002001_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/40002002_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>street</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>short_walk</distance_to_bus_stops>
+      <plus_vat>1</plus_vat>
+      <negotiable_price>1</negotiable_price>
+      <commercial_type>land_plot</commercial_type>
+      <legal_status>freehold</legal_status>
+      <advertising_installation_allowed>yes</advertising_installation_allowed>
+      <foot_traffic>high</foot_traffic>
+      <commercial_planning_zone>eb2</commercial_planning_zone>
+      <commercial_plot_type>shop</commercial_plot_type>
+    </attributes>
+  </listing>
+  <listing>
+    <id>40003</id>
+    <ref>SALE_COM_LAND_003</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>commercial</offer_type>
+    <price>1200000</price>
+    <currency>EUR</currency>
+    <link_to_virtual_tour>https://my.matterport.com/show/?m=commercial_plot</link_to_virtual_tour>
+    <full_area>0</full_area>
+    <plot_area>4200</plot_area>
+    <building_density>0.5</building_density>
+    <created_at>2025-01-03 09:15:00</created_at>
+    <updated_at>2025-01-15 16:45:00</updated_at>
+    <title>Large commercial plot near airport</title>
+    <description>Exceptional commercial development opportunity near Larnaca Airport. Ideal for logistics, warehousing, or industrial development. Excellent infrastructure and transport connections.</description>
+    <city>Larnaca</city>
+    <pin_map>
+      <latitude>34.871765</latitude>
+      <longitude>33.624573</longitude>
+      <formatted_address>Airport Road Industrial Area, Larnaca 7130, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/40003001_large.jpg</url>
+      </image>
+      <image>
+        <tags>
+          <tag>floorplan</tag>
+        </tags>
+        <url>http://cdn.rera.cy/40003002_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/40003003_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/40003004_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>street</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>moderate_distance</distance_to_bus_stops>
+      <plus_vat>1</plus_vat>
+      <negotiable_price>0</negotiable_price>
+      <sharing_plot>0</sharing_plot>
+      <commercial_type>land_plot</commercial_type>
+      <legal_status>freehold</legal_status>
+      <advertising_installation_allowed>yes</advertising_installation_allowed>
+      <foot_traffic>medium</foot_traffic>
+      <commercial_planning_zone>eb6</commercial_planning_zone>
+      <commercial_plot_type>office_building</commercial_plot_type>
+    </attributes>
+  </listing>
+</root>

@@ -2,22 +2,42 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "RERA XML feed",
+  title: "RERA XML",
   description: "Specification",
+  head: [
+    [
+      'link',
+      {
+        rel: 'icon',
+        type: 'image/png',
+        href: 'favicon-32x32.png'
+      }
+    ],
+    [
+      'link',
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: 'favicon-16x16.png'
+      }
+    ],
+    [
+      'link',
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: 'apple-icon-180x180.png'
+      }
+    ]
+  ],
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
+    logo: 'apple-icon-180x180.png',
+
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Import Specification', link: '/import-specification' }
-    ],
-
-    sidebar: [
-      {
-        text: 'XML Import Specification',
-        items: [
-          { text: 'Getting Started', link: '/import-specification#getting-started' },
-        ]
-      }
+      { text: 'Import', link: '/import-specification' },
+      { text: 'Examples', link: '/examples' },
     ],
 
     socialLinks: [

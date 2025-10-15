@@ -4,33 +4,31 @@
     <feed_version>1</feed_version>
   </rera>
   <contact_details>
-    <whatsapp_number>0034666555444</whatsapp_number>
-    <phone_number>0034666555444</phone_number>
+    <whatsapp_number>+35799999999</whatsapp_number>
+    <phone_number>+35799999999</phone_number>
   </contact_details>
   <listing>
     <id>12367</id>
     <ref>Any_Ref_123</ref>
     <status>active</status>
-    <city_id>1</city_id>
     <deal_type>sale</deal_type>
     <offer_type>residential</offer_type>
-    <property_type>villa</property_type>
     <price>250000</price>
     <old_price>280000</old_price>
     <deposit>250000</deposit>
     <currency>EUR</currency>
     <link_to_virtual_tour>https://my.matterport.com/show/?m=eUuz64WjuQe</link_to_virtual_tour>
     <link_to_video>https://www.youtube.com/watch?v=dQw4w9WgXcQ</link_to_video>
-    <full_area></full_area>
-    <living_area></living_area>
-    <kitchen_area></kitchen_area>
-    <floor></floor>
-    <floor_total></floor_total>
+    <full_area>123</full_area>
+    <living_area>90</living_area>
+    <kitchen_area>23</kitchen_area>
+    <floor>3</floor>
+    <floor_total>5</floor_total>
     <is_available>1</is_available>
-    <become_available_at></become_available_at>
-    <plot_area></plot_area>
+    <become_available_at>2025-01-01</become_available_at>
+    <plot_area>300</plot_area>
     <building_density></building_density>
-    <construction_year></construction_year>
+    <construction_year>2020</construction_year>
     <estimated_completion_at></estimated_completion_at>
     <created_at>2013-09-27 12:00:10</created_at>
     <updated_at>2013-09-27 12:00:10</updated_at>
@@ -39,6 +37,7 @@
     <pin_map>
       <latitude>36.728807</latitude>
       <longitude>-3.693466</longitude>
+      <city>Limassol</city>
       <formatted_address>Almunecar, Granada, Spain</formatted_address>
     </pin_map>
     <images>

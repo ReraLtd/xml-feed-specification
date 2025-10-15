@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root>
+  <rera>
+    <feed_version>1</feed_version>
+  </rera>
+  <contact_details>
+    <whatsapp_number>+35799999999</whatsapp_number>
+    <phone_number>+35799999999</phone_number>
+  </contact_details>
+  <listing>
+    <id>50001</id>
+    <ref>SALE_RES_LAND_001</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>residential</offer_type>
+    <price>280000</price>
+    <old_price>310000</old_price>
+    <currency>EUR</currency>
+    <full_area>0</full_area>
+    <plot_area>800</plot_area>
+    <building_density>0.6</building_density>
+    <created_at>2025-01-07 13:30:00</created_at>
+    <updated_at>2025-01-15 14:20:00</updated_at>
+    <title>Residential plot with sea view potential</title>
+    <description>Excellent residential building plot in quiet neighborhood with potential for sea views from upper floors. Perfect for building dream family home. All utilities at plot boundary.</description>
+    <city>Paphos</city>
+    <pin_map>
+      <latitude>34.742985</latitude>
+      <longitude>32.401257</longitude>
+      <formatted_address>Coral Bay Heights, Paphos 8575, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/50001001_large.jpg</url>
+      </image>
+      <image>
+        <tags>
+          <tag>floorplan</tag>
+        </tags>
+        <url>http://cdn.rera.cy/50001002_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/50001003_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>mountains,park</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>moderate_distance</distance_to_bus_stops>
+      <plus_vat>0</plus_vat>
+      <negotiable_price>1</negotiable_price>
+      <sharing_plot>0</sharing_plot>
+      <residential_type>land_plot</residential_type>
+      <residential_planning_zone>ka4</residential_planning_zone>
+      <residential_plot_type>detached_house</residential_plot_type>
+    </attributes>
+  </listing>
+  <listing>
+    <id>50002</id>
+    <ref>SALE_RES_LAND_002</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>residential</offer_type>
+    <price>650000</price>
+    <currency>EUR</currency>
+    <link_to_virtual_tour>https://my.matterport.com/show/?m=residential_plot</link_to_virtual_tour>
+    <full_area>0</full_area>
+    <plot_area>1500</plot_area>
+    <building_density>0.8</building_density>
+    <created_at>2025-01-04 10:45:00</created_at>
+    <updated_at>2025-01-15 13:55:00</updated_at>
+    <title>Large development plot for apartment complex</title>
+    <description>Prime development opportunity for residential apartment complex. Excellent location with high building density allowance. Pre-approved planning permissions available.</description>
+    <city>Limassol</city>
+    <pin_map>
+      <latitude>34.695748</latitude>
+      <longitude>33.026543</longitude>
+      <formatted_address>Agios Athanasios Area, Limassol 4102, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/50002001_large.jpg</url>
+      </image>
+      <image>
+        <tags>
+          <tag>floorplan</tag>
+        </tags>
+        <url>http://cdn.rera.cy/50002002_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/50002003_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/50002004_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>street,mountains</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>walkable</distance_to_bus_stops>
+      <plus_vat>1</plus_vat>
+      <negotiable_price>0</negotiable_price>
+      <sharing_plot>0</sharing_plot>
+      <residential_type>land_plot</residential_type>
+      <residential_planning_zone>ka6</residential_planning_zone>
+      <residential_plot_type>apartment_complex</residential_plot_type>
+    </attributes>
+  </listing>
+  <listing>
+    <id>50003</id>
+    <ref>SALE_RES_LAND_003</ref>
+    <status>active</status>
+    <deal_type>sale</deal_type>
+    <offer_type>residential</offer_type>
+    <price>180000</price>
+    <currency>EUR</currency>
+    <full_area>0</full_area>
+    <plot_area>600</plot_area>
+    <building_density>0.4</building_density>
+    <created_at>2025-01-09 08:20:00</created_at>
+    <updated_at>2025-01-15 15:10:00</updated_at>
+    <title>Subdivided plot in established neighborhood</title>
+    <description>Ready-to-build subdivided plot in mature residential area. Great for first-time builders, surrounded by quality homes. Quiet cul-de-sac location.</description>
+    <city>Larnaca</city>
+    <pin_map>
+      <latitude>34.923847</latitude>
+      <longitude>33.635098</longitude>
+      <formatted_address>Livadia Heights, Larnaca 7020, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>http://cdn.rera.cy/50003001_large.jpg</url>
+      </image>
+      <image>
+        <url>http://cdn.rera.cy/50003002_large.jpg</url>
+      </image>
+    </images>
+    <attributes>
+      <window_views>street,courtyard</window_views>
+      <energy_class>in_progress</energy_class>
+      <construction_stage>off_plan</construction_stage>
+      <distance_to_bus_stops>short_walk</distance_to_bus_stops>
+      <plus_vat>0</plus_vat>
+      <negotiable_price>1</negotiable_price>
+      <sharing_plot>0</sharing_plot>
+      <residential_type>land_plot</residential_type>
+      <residential_planning_zone>ka5</residential_planning_zone>
+      <residential_plot_type>subdivided_plot</residential_plot_type>
+    </attributes>
+  </listing>
+</root>
