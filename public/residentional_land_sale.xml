@@ -3,10 +3,15 @@
   <rera>
     <feed_version>1</feed_version>
   </rera>
-  <contact_details>
+  <owner>
+    <logo_url>http://cdn.rera.cy/agency_logo.png</logo_url>
+    <name>Premium Real Estate Agency</name>
+    <license>123</license>
+    <reg_number>1234</reg_number>
     <whatsapp_number>+35799999999</whatsapp_number>
     <phone_number>+35799999999</phone_number>
-  </contact_details>
+    <email>info@premiumrealestate.cy</email>
+  </owner>
   <listing>
     <id>12367</id>
     <ref>Any_Ref_123</ref>

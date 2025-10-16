@@ -179,15 +179,61 @@ Follow these best practices to ensure successful feed processing and optimal lis
   <rera>
     <feed_version>1</feed_version>
   </rera>
-  <contact_details>
+  <owner>
+    <logo_url></logo_url>
+    <name></name>
+    <license></license>
+    <reg_number></reg_number>
     <whatsapp_number></whatsapp_number>
     <phone_number></phone_number>
-  </contact_details>
+    <email></email>
+  </owner>
   <listing>
     <!-- Listing fields -->
   </listing>
 </root>
 ```
+
+### Owner Information
+
+The `<owner>` block contains information about the property owner or listing agent. All fields are optional.
+
+**Important**: If owner information is provided from external systems during integration, this data can be updated and changed in the RERA.CY system. When syncing from external platforms, the owner details may be modified in RERA based on the latest information from the integrated system.
+
+#### logo_url
+- Type: url
+- Required: `false`
+- Description: URL to the owner's or agency's logo image.
+
+#### name
+- Type: string
+- Required: `false`
+- Description: Owner or agency name.
+
+#### license
+- Type: string
+- Required: `false`
+- Description: License number (for licensed real estate professionals).
+
+#### reg_number
+- Type: string
+- Required: `false`
+- Description: Registration number.
+
+#### whatsapp_number
+- Type: string
+- Required: `false`
+- Description: WhatsApp contact number (include country code, e.g., +357).
+
+#### phone_number
+- Type: string
+- Required: `false`
+- Description: Primary contact phone number (include country code, e.g., +357).
+
+#### email
+- Type: string
+- Required: `false`
+- Description: Contact email address.
 
 ### Listing Fields
 
@@ -837,7 +883,7 @@ xmlstarlet val your-feed.xml
 - [ ] XML declaration with UTF-8 encoding
 - [ ] Root `<root>` element containing all content
 - [ ] RERA version block: `<rera><feed_version>1</feed_version></rera>`
-- [ ] Contact details block with phone/WhatsApp
+- [ ] Owner information block `<owner>` (all fields optional)
 - [ ] At least one `<listing>` element
 
 **✅ Every Listing Contains:**

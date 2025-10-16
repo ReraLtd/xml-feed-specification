@@ -52,7 +52,7 @@ Each example demonstrates:
 - ✅ **Multiple Listings**: 2-3 varied examples per file showing different scenarios
 - ✅ **Proper Structure**: Correct XML hierarchy and required fields
 - ✅ **Image Integration**: Multiple images including floorplans where appropriate
-- ✅ **Contact & Metadata**: Proper RERA version and contact details structure
+- ✅ **Owner Information**: Complete owner/agency details including contact information and credentials
 
 ## Usage Notes
 
@@ -66,10 +66,13 @@ Each example demonstrates:
 
 When adapting these examples for your feed:
 
-1. **Update IDs and References**: Replace example IDs and refs with your system's values
-2. **Modify Coordinates**: Use exact coordinates for your properties
-3. **Adjust Pricing**: Set realistic prices for your market position
-4. **Update Images**: Replace with your actual CDN URLs or image hosting solution  
-5. **Customize Descriptions**: Write compelling, accurate property descriptions
-6. **Set Proper Timestamps**: Use actual creation and modification dates
-7. **Review Attributes**: Include only relevant attributes for each specific property
+1. **Update Owner Information**: Replace with your agency/owner details (name, license, contact information)
+2. **Update IDs and References**: Replace example IDs and refs with your system's values
+3. **Modify Coordinates**: Use exact coordinates for your properties
+4. **Adjust Pricing**: Set realistic prices for your market position
+5. **Update Images**: Replace with your actual CDN URLs or image hosting solution  
+6. **Customize Descriptions**: Write compelling, accurate property descriptions
+7. **Set Proper Timestamps**: Use actual creation and modification dates
+8. **Review Attributes**: Include only relevant attributes for each specific property
+
+**Note on External Integrations**: If your feed comes from an external system integration, the owner information can be updated and changed in RERA.CY based on the data provided by the external platform during synchronization.
