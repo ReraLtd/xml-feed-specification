@@ -38,7 +38,7 @@ features:
 
 &nbsp;
 
-# Why Choose RERA XML Feed?
+# Real Estate Listings XML Feed
 
 ## The New Standard for Real Estate Integration
 
