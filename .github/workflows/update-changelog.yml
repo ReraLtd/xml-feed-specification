@@ -1,0 +1,76 @@
+name: Update Changelog on Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get release information
+        id: release_info
+        run: |
+          echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          echo "name=${{ github.event.release.name }}" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Update changelog
+        run: |
+          VERSION="${{ steps.release_info.outputs.version }}"
+          RELEASE_NAME="${{ steps.release_info.outputs.name }}"
+          RELEASE_DATE="${{ steps.release_info.outputs.date }}"
+          RELEASE_BODY=$(cat << 'EOF'
+          ${{ github.event.release.body }}
+          EOF
+          )
+
+          # Create temporary file with new entry
+          {
+            echo "# Changelog"
+            echo ""
+            echo "## [$VERSION] - $RELEASE_DATE"
+            echo ""
+            if [ -n "$RELEASE_NAME" ] && [ "$RELEASE_NAME" != "$VERSION" ]; then
+              echo "### $RELEASE_NAME"
+              echo ""
+            fi
+            echo "$RELEASE_BODY"
+            echo ""
+          } > changelog_new.md
+
+          # Append existing changelog content (skip first line if it's the header)
+          if [ -f changelog.md ]; then
+            tail -n +2 changelog.md >> changelog_new.md
+          fi
+
+          # Replace old changelog with new one
+          mv changelog_new.md changelog.md
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet changelog.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add changelog.md
+          git commit -m "docs: update changelog for ${{ steps.release_info.outputs.version }}"
+          git push origin HEAD:${{ github.event.release.target_commitish }}
