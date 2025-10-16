@@ -56,7 +56,7 @@ While other platforms offer basic property feeds, RERA XML Feed is positioning i
 
 Real estate technology is evolving rapidly, and RERA XML Feed is leading this transformation. By adopting our specification now, you're not just solving today's integration challenges—you're positioning your platform for the future of European real estate.
 
-**Ready to integrate?** Our [comprehensive documentation](https://xml.rera.cy/import-specification) and [practical examples](/https://xml.rera.cy/examples) will get you up and running in hours, not weeks.
+**Ready to integrate?** Our [comprehensive documentation](https://xml.rera.cy/import-specification) and [practical examples](https://xml.rera.cy/examples) will get you up and running in hours, not weeks.
 
 **Need help?** Our technical team provides world-class support to ensure your integration success.
 
