@@ -52,3 +52,29 @@ This design handles large inventories without protocol-level pagination or loadi
 - [Complete specification](https://xml.rera.cy/import-specification)
 - [XML examples](https://xml.rera.cy/examples)
 - Technical support: `it@rera.cy`
+
+## MCP access for agents
+
+This repository includes a local [Model Context Protocol](https://modelcontextprotocol.io/) server so coding agents can list, read, and search the specification without scraping the rendered website.
+
+After cloning the repository, install dependencies and start the server over stdio:
+
+```bash
+pnpm install
+pnpm mcp
+```
+
+Point an MCP client at the repository with its absolute path:
+
+```json
+{
+  "mcpServers": {
+    "rera-xml-docs": {
+      "command": "pnpm",
+      "args": ["--dir", "/absolute/path/to/xml-feed-specification", "mcp"]
+    }
+  }
+}
+```
+
+The server exposes every documentation page as a Markdown resource and provides `list_documentation`, `read_documentation`, and `search_documentation` tools. The search tool returns ranked excerpts with source filenames and line numbers.
