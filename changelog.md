@@ -18,6 +18,7 @@
 - Optional `<developments>` collection for shared new-development metadata.
 - Optional listing-level `<development_id>` linking a sellable unit to its development.
 - A simple block model: each block is represented as a separate development with the block identified in `id`, `name`, or both.
+- Optional development-level `<branch_id>` and `<agent_id>` using the same agent, branch, and owner contact priority as listings.
 
 ### Compatibility
 
@@ -27,6 +28,7 @@
 - The `<agents>` block is optional. A listing without `<agent_id>` has no specifically assigned agent, even when other listings in the feed reference agents.
 - Agent IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine the agent assigned to a listing.
 - Public contact priority is assigned agent when agent flow is enabled, then referenced branch, then owner.
+- A development without contact references uses `<owner>` as its main contact. Development contact references are not inherited by linked listings.
 - Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
 - Branch-, agent-, and development-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
 

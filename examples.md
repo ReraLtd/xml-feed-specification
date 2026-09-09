@@ -48,6 +48,8 @@ This page contains comprehensive XML feed examples covering all major property t
     <development>
       <id>sunset-residences-block-a</id>
       <name>Sunset Residences — Block A</name>
+      <branch_id>limassol-main</branch_id>
+      <agent_id>agent-42</agent_id>
       <developer_name>Example Development Ltd</developer_name>
       <description>New residential development in Limassol.</description>
       <construction_stage>under_construction</construction_stage>

@@ -285,6 +285,8 @@ function processListingBatch(batch):
     <development>
       <id></id>
       <name></name>
+      <branch_id></branch_id>
+      <agent_id></agent_id>
       <developer_name></developer_name>
       <description></description>
       <construction_stage></construction_stage>
@@ -489,6 +491,8 @@ Each sellable property remains a separate `<listing>`. Common project informatio
   <development>
     <id>sunset-residences-block-a</id>
     <name>Sunset Residences — Block A</name>
+    <branch_id>limassol-main</branch_id>
+    <agent_id>agent-42</agent_id>
     <developer_name>Example Development Ltd</developer_name>
     <description>New residential development in Limassol.</description>
     <construction_stage>under_construction</construction_stage>
@@ -517,6 +521,16 @@ Each sellable property remains a separate `<listing>`. Common project informatio
 - Type: string
 - Required: `true`
 - Description: Public development name. Include the block name here when the project contains independently represented blocks.
+
+#### development.branch_id
+- Type: string
+- Required: `false`
+- Description: ID of the branch that owns the development. When present, it must exactly match a `<branches><branch><id>` value in the same feed. If omitted, `<owner>` is the development's agency.
+
+#### development.agent_id
+- Type: string
+- Required: `false`
+- Description: ID of the agent assigned to the development. When present, it must exactly match an `<agents><agent><id>` value in the same feed. It is used for public display only when the owner-level `<agent_flow_enabled>` setting is `1`.
 
 #### development.developer_name
 - Type: string
@@ -557,6 +571,16 @@ Each sellable property remains a separate `<listing>`. Common project informatio
 #### Representing Blocks
 
 Version 2 does not define separate `<blocks>` or `<buildings>` elements. If a project contains multiple blocks that need to be distinguished, represent each block as a separate `<development>` and include the block in its `id`, its `name`, or both. Listings then reference the appropriate block through `<development_id>`.
+
+#### Development Contact Priority
+
+Development contacts use the same priority as listing contacts:
+
+1. If `<agent_flow_enabled>` is `1` and the development has a valid `<agent_id>`, the agent's contacts are primary. The selected agency is also displayed.
+2. Otherwise, if the development has a valid `<branch_id>`, the branch contacts are used.
+3. Otherwise, the owner contacts are used.
+
+If both references are omitted, `<owner>` is the development's main contact. Development-level `branch_id` and `agent_id` apply only to the development itself. Linked listings do not inherit them and continue to use their own contact references.
 
 ### Listing Contact Priority
 
@@ -1237,6 +1261,10 @@ xmlstarlet val your-feed.xml
 - [ ] Optional `<agents>` block uses unique, non-empty agent IDs
 - [ ] Optional `<developments>` block uses unique, non-empty development IDs
 - [ ] At least one `<listing>` element
+
+**✅ Every Development Contains:**
+- [ ] Unique non-empty `<id>` and a public `<name>`
+- [ ] Optional `<branch_id>` and `<agent_id>` match entries declared in the same feed
 
 **✅ Every Listing Contains:**
 - [ ] Optional `<branch_id>` matches a branch declared in the same feed; when omitted, the listing belongs to `<owner>`
