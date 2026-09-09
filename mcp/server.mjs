@@ -65,7 +65,7 @@ function createServer() {
     'search_documentation',
     {
       title: 'Search RERA XML documentation',
-      description: 'Search headings and content across the specification, examples, overview, and changelog. Returns ranked excerpts with source lines.',
+      description: 'Search headings and content across the specification, examples, overview, engineering prompt, and changelog. Returns ranked excerpts with source lines.',
       inputSchema: z.object({
         query: z.string().trim().min(1).describe('Text, XML element, enum value, or phrase to find'),
         document: documentId.optional().describe('Optional document id to search'),

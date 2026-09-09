@@ -51,6 +51,7 @@ This design handles large inventories without protocol-level pagination or loadi
 
 - [Complete specification](https://xml.rera.cy/import-specification)
 - [XML examples](https://xml.rera.cy/examples)
+- [Ready-to-use engineering prompt](https://xml.rera.cy/engineering-prompt)
 - Technical support: `it@rera.cy`
 
 ## MCP access for agents

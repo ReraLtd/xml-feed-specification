@@ -38,6 +38,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Import', link: '/import-specification' },
       { text: 'Examples', link: '/examples' },
+      { text: 'Engineering prompt', link: '/engineering-prompt' },
     ],
 
     socialLinks: [

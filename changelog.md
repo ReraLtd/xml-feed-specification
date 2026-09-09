@@ -6,6 +6,7 @@
 
 ### Added
 
+- A ready-to-use engineering prompt for coding agents that installs the documentation MCP, maps existing project data, and implements a read-only feed without database or domain-model changes.
 - Optional `<branches>` collection for offices, brands, or operational units owned by the feed owner.
 - Required `id` and `name` fields for each declared branch.
 - Optional branch logo, WhatsApp number, call phone number, and email.
