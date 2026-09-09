@@ -199,8 +199,20 @@ Follow these best practices to ensure successful feed processing and optimal lis
       <verification></verification>
     </branch>
   </branches>
+  <agents>
+    <agent>
+      <id></id>
+      <name></name>
+      <photo_url></photo_url>
+      <whatsapp_number></whatsapp_number>
+      <phone_number></phone_number>
+      <email></email>
+      <verification></verification>
+    </agent>
+  </agents>
   <listing>
     <branch_id></branch_id>
+    <agent_id></agent_id>
     <!-- Listing fields -->
   </listing>
 </root>
@@ -208,7 +220,7 @@ Follow these best practices to ensure successful feed processing and optimal lis
 
 ### Feed Version
 
-Version 2 adds branch-level ownership and contact information. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only `<branches>` or `<branch_id>` elements.
+Version 2 adds branch-level ownership and agent information. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only `<branches>`, `<agents>`, `<branch_id>`, or `<agent_id>` elements.
 
 ### Owner Information
 
@@ -306,12 +318,72 @@ Branches only determine listing ownership. If `<branches>` is omitted, or if a l
 - Required: `false`
 - Description: Free-form branch verification information, such as a company registration number, real estate licence, or both. Example: `Reg. no HE123456, Lic. No 1234-567E`.
 
+### Agent Information (version 2)
+
+The `<agents>` block is optional and contains agents that may be assigned to listings. Each `<agent>` must have an `id` and a `name`. A feed may define any number of agents.
+
+If `<agents>` is omitted, or if a listing does not contain `<agent_id>`, no specific agent is assigned to that listing. This also applies when agents are declared but only some listings reference them.
+
+```xml
+<agents>
+  <agent>
+    <id>agent-42</id>
+    <name>Alex Morgan</name>
+    <photo_url>https://cdn.example.com/agents/alex-morgan.jpg</photo_url>
+    <whatsapp_number>+35799111222</whatsapp_number>
+    <phone_number>+35725111222</phone_number>
+    <email>alex.morgan@example.com</email>
+    <verification>Lic. No 1234-567E</verification>
+  </agent>
+</agents>
+```
+
+#### agent.id
+- Type: string
+- Required: `true`
+- Description: Stable agent identifier from the feed provider's system, used only to determine which agent is assigned to a listing. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different agent.
+
+#### agent.name
+- Type: string
+- Required: `true`
+- Description: Public agent name.
+
+#### agent.photo_url
+- Type: url
+- Required: `false`
+- Description: Public URL of the agent's profile photo.
+
+#### agent.whatsapp_number
+- Type: string
+- Required: `false`
+- Description: Agent WhatsApp number, including the country code (for example, `+357`).
+
+#### agent.phone_number
+- Type: string
+- Required: `false`
+- Description: Agent phone number for calls, including the country code (for example, `+357`).
+
+#### agent.email
+- Type: string
+- Required: `false`
+- Description: Agent contact email address.
+
+#### agent.verification
+- Type: string
+- Required: `false`
+- Description: Free-form agent verification information, such as a real estate licence or registration number. Example: `Lic. No 1234-567E`.
+
 ### Listing Fields
 
 #### branch_id
 - Type: string
 - Required: `false`
 - Description: ID of the branch that owns the listing. It is used only to determine listing ownership and must exactly match a `<branches><branch><id>` value in the same feed. If omitted, the `<owner>` owns the listing, including when the feed declares other branches.
+
+#### agent_id
+- Type: string
+- Required: `false`
+- Description: ID of the agent assigned to the listing. It is used only to identify the responsible agent and must exactly match an `<agents><agent><id>` value in the same feed. If omitted, no specific agent is assigned, including when the feed declares other agents.
 
 #### id
 - Type: number
@@ -961,10 +1033,12 @@ xmlstarlet val your-feed.xml
 - [ ] RERA version block: `<rera><feed_version>2</feed_version></rera>`
 - [ ] Owner information block `<owner>` (all fields optional)
 - [ ] Optional `<branches>` block uses unique, non-empty branch IDs
+- [ ] Optional `<agents>` block uses unique, non-empty agent IDs
 - [ ] At least one `<listing>` element
 
 **✅ Every Listing Contains:**
 - [ ] Optional `<branch_id>` matches a branch declared in the same feed; when omitted, the listing belongs to `<owner>`
+- [ ] Optional `<agent_id>` matches an agent declared in the same feed
 - [ ] Unique numeric `<id>`
 - [ ] String `<ref>` (your reference code)
 - [ ] Valid `<status>` (typically "active")

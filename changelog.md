@@ -11,14 +11,18 @@
 - Optional branch logo, WhatsApp number, call phone number, and email.
 - Optional free-form branch verification string for company registration, licence, and similar information.
 - Optional listing-level `<branch_id>` referencing the branch responsible for a listing.
+- Optional `<agents>` collection with agent ID, name, photo, contact details, and free-form verification information.
+- Optional listing-level `<agent_id>` referencing the agent responsible for a listing.
 
 ### Compatibility
 
 - The `<owner>` block remains unchanged and represents the owner of the feed and its branches.
 - The `<branches>` block is optional. A listing without `<branch_id>` belongs to `<owner>`, even when other listings in the feed reference branches.
 - Branch IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine listing ownership.
+- The `<agents>` block is optional. A listing without `<agent_id>` has no specifically assigned agent, even when other listings in the feed reference agents.
+- Agent IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine the agent assigned to a listing.
 - Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
-- Branch-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
+- Branch- and agent-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
 
 ### Planned Follow-ups
 

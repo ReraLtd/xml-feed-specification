@@ -31,9 +31,21 @@ This page contains comprehensive XML feed examples covering all major property t
       <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
     </branch>
   </branches>
+  <agents>
+    <agent>
+      <id>agent-42</id>
+      <name>Alex Morgan</name>
+      <photo_url>https://cdn.example.com/agents/alex-morgan.jpg</photo_url>
+      <whatsapp_number>+35799111222</whatsapp_number>
+      <phone_number>+35725111222</phone_number>
+      <email>alex.morgan@example.com</email>
+      <verification>Lic. No 1234-567E</verification>
+    </agent>
+  </agents>
   <listing>
     <!-- Default -->
     <branch_id/>
+    <agent_id/>
     <id/>
     <ref/>
     <status/>
