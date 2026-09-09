@@ -42,6 +42,49 @@
 - Feed publishers should regenerate their XML in a background job every hour or more frequently and publish updates atomically.
 - The version 2 attribute reference is synchronized with the current active RERA attribute catalog.
 
+
+## [2.0.0] - 2026-09-09
+
+### v2.0.0
+
+### Added
+
+- A ready-to-use engineering prompt for coding agents that installs the documentation MCP, maps existing project data, and implements a read-only feed without database or domain-model changes.
+- Optional `<branches>` collection for offices, brands, or operational units owned by the feed owner.
+- Required `id` and `name` fields for each declared branch.
+- Optional branch logo, WhatsApp number, call phone number, and email.
+- Optional free-form branch verification string for company registration, licence, and similar information.
+- Optional listing-level `<branch_id>` referencing the branch responsible for a listing.
+- Optional `<agents>` collection with agent ID, name, photo, contact details, and free-form verification information.
+- Optional listing-level `<agent_id>` referencing the agent responsible for a listing.
+- Optional owner-level `<show_approximate_location>` setting controlling exact versus approximate public location display.
+- Optional owner-level `<agent_flow_enabled>` setting controlling whether an assigned agent and their contacts are displayed alongside the agency.
+- Optional `<developments>` collection for shared new-development metadata.
+- Optional listing-level `<development_id>` linking a sellable unit to its development.
+- A simple block model: each block is represented as a separate development with the block identified in `id`, `name`, or both.
+- Optional development-level `<branch_id>` and `<agent_id>` using the same agent, branch, and owner contact priority as listings.
+- Development listings are defined as detailed units. Units missing from a successfully processed complete snapshot are archived and remain visible within the project as unavailable.
+- Full example coverage for the supported `with_freight_elevator` and `with_tumble_dryer` attributes.
+
+### Compatibility
+
+- The `<owner>` block remains the owner of the feed and its branches; version 2 adds two optional feed-wide display settings.
+- The `<branches>` block is optional. A listing without `<branch_id>` belongs to `<owner>`, even when other listings in the feed reference branches.
+- Branch IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine listing ownership.
+- The `<agents>` block is optional. A listing without `<agent_id>` has no specifically assigned agent, even when other listings in the feed reference agents.
+- Agent IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine the agent assigned to a listing.
+- Public contact priority is assigned agent when agent flow is enabled, then referenced branch, then owner.
+- A development without contact references uses `<owner>` as its main contact. Development contact references are not inherited by linked listings.
+- Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
+- Branch-, agent-, and development-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
+
+### Changed
+
+- `<created_at>` and `<updated_at>` are optional. RERA detects changes by comparing stored fingerprints for listing data, attributes, photos, and text content.
+- Large XML feeds are consumed as complete snapshots with streaming parsing and queued worker batches of 50 listings; pagination is not required.
+- Feed publishers should regenerate their XML in a background job every hour or more frequently and publish updates atomically.
+- The version 2 attribute reference is synchronized with the current active RERA attribute catalog.
+
 ## [1.0.0] - 2025-10-17
 
 ### v1.0.0
