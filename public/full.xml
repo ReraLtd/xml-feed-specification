@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url/>
@@ -12,8 +12,29 @@
     <phone_number/>
     <email/>
   </owner>
+  <branches>
+    <branch>
+      <id>limassol-main</id>
+      <name>RERA Limassol</name>
+      <logo_url>https://cdn.example.com/branches/limassol.png</logo_url>
+      <whatsapp_number>+35799123456</whatsapp_number>
+      <phone_number>+35725123456</phone_number>
+      <email>limassol@example.com</email>
+      <verification>
+        <item>
+          <type>company_registration_number</type>
+          <value>HE 123456</value>
+        </item>
+        <item>
+          <type>real_estate_license</type>
+          <value>AA 987</value>
+        </item>
+      </verification>
+    </branch>
+  </branches>
   <listing>
     <!-- Default -->
+    <branch_id/>
     <id/>
     <ref/>
     <status/>

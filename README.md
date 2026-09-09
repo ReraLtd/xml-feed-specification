@@ -14,6 +14,7 @@ RERA XML Feed isn't just another property listing format—it's the most compreh
 
 **🌍 Complete Property Ecosystem**
 - Single feed handles residential, commercial, sales, and rentals
+- Version 2 supports multiple branches with per-listing responsibility and branch contacts
 - From studio apartments to commercial complexes and land plots
 - Covers entire property lifecycle: off-plan to resale
 
@@ -59,4 +60,3 @@ Real estate technology is evolving rapidly, and RERA XML Feed is leading this tr
 **Ready to integrate?** Our [comprehensive documentation](https://xml.rera.cy/import-specification) and [practical examples](https://xml.rera.cy/examples) will get you up and running in hours, not weeks.
 
 **Need help?** Our technical team provides world-class support to ensure your integration success.
-

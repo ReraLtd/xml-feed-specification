@@ -177,7 +177,7 @@ Follow these best practices to ensure successful feed processing and optimal lis
 ```xml
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url></logo_url>
@@ -188,15 +188,36 @@ Follow these best practices to ensure successful feed processing and optimal lis
     <phone_number></phone_number>
     <email></email>
   </owner>
+  <branches>
+    <branch>
+      <id></id>
+      <name></name>
+      <logo_url></logo_url>
+      <whatsapp_number></whatsapp_number>
+      <phone_number></phone_number>
+      <email></email>
+      <verification>
+        <item>
+          <type></type>
+          <value></value>
+        </item>
+      </verification>
+    </branch>
+  </branches>
   <listing>
+    <branch_id></branch_id>
     <!-- Listing fields -->
   </listing>
 </root>
 ```
 
+### Feed Version
+
+Version 2 adds branch-level ownership and contact information. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only `<branches>` or `<branch_id>` elements.
+
 ### Owner Information
 
-The `<owner>` block contains information about the property owner or listing agent. All fields are optional.
+The `<owner>` block contains information about the organization that owns the feed and its branches. It remains unchanged from version 1. All fields are optional.
 
 **Important**: If owner information is provided from external systems during integration, this data can be updated and changed in the RERA.CY system. When syncing from external platforms, the owner details may be modified in RERA based on the latest information from the integrated system.
 
@@ -235,7 +256,74 @@ The `<owner>` block contains information about the property owner or listing age
 - Required: `false`
 - Description: Contact email address.
 
+### Branch Information (version 2)
+
+The optional `<branches>` block contains the offices, brands, or operational units managed by the feed owner. Each `<branch>` must have an `id` and a `name`. A feed may define any number of branches.
+
+```xml
+<branches>
+  <branch>
+    <id>limassol-main</id>
+    <name>RERA Limassol</name>
+    <logo_url>https://cdn.example.com/branches/limassol.png</logo_url>
+    <whatsapp_number>+35799123456</whatsapp_number>
+    <phone_number>+35725123456</phone_number>
+    <email>limassol@example.com</email>
+    <verification>
+      <item>
+        <type>company_registration_number</type>
+        <value>HE 123456</value>
+      </item>
+      <item>
+        <type>real_estate_license</type>
+        <value>AA 987</value>
+      </item>
+    </verification>
+  </branch>
+</branches>
+```
+
+#### branch.id
+- Type: string
+- Required: `true`
+- Description: Stable branch identifier from the feed provider's system. It must be unique within the feed and must not be reused for a different branch.
+
+#### branch.name
+- Type: string
+- Required: `true`
+- Description: Public branch name.
+
+#### branch.logo_url
+- Type: url
+- Required: `false`
+- Description: Public URL of the branch logo. When omitted, the owner logo may be used.
+
+#### branch.whatsapp_number
+- Type: string
+- Required: `false`
+- Description: Branch WhatsApp number, including the country code (for example, `+357`).
+
+#### branch.phone_number
+- Type: string
+- Required: `false`
+- Description: Branch phone number for calls, including the country code (for example, `+357`).
+
+#### branch.email
+- Type: string
+- Required: `false`
+- Description: Branch contact email address.
+
+#### branch.verification
+- Type: collection
+- Required: `false`
+- Description: Verification information for the branch. Each `<item>` contains a string `<type>` and `<value>`. Recommended types are `company_registration_number` and `real_estate_license`; other types are allowed for jurisdiction-specific identifiers. A type must not occur more than once within the same branch.
+
 ### Listing Fields
+
+#### branch_id
+- Type: string
+- Required: `false`
+- Description: ID of the branch responsible for the listing. When present, it must exactly match a `<branches><branch><id>` value in the same feed. Omit it when responsibility stays at feed-owner level.
 
 #### id
 - Type: number
@@ -882,11 +970,13 @@ xmlstarlet val your-feed.xml
 **✅ Required Elements Present:**
 - [ ] XML declaration with UTF-8 encoding
 - [ ] Root `<root>` element containing all content
-- [ ] RERA version block: `<rera><feed_version>1</feed_version></rera>`
+- [ ] RERA version block: `<rera><feed_version>2</feed_version></rera>`
 - [ ] Owner information block `<owner>` (all fields optional)
+- [ ] Optional `<branches>` block uses unique, non-empty branch IDs
 - [ ] At least one `<listing>` element
 
 **✅ Every Listing Contains:**
+- [ ] Optional `<branch_id>` matches a branch declared in the same feed
 - [ ] Unique numeric `<id>`
 - [ ] String `<ref>` (your reference code)
 - [ ] Valid `<status>` (typically "active")
@@ -908,6 +998,15 @@ xmlstarlet val your-feed.xml
 - [ ] GPS coordinates within Cyprus bounds
 - [ ] Currency is "EUR"
 - [ ] All enum values match specification exactly
+
+## Version 2 Roadmap
+
+The following v2 work is planned but is not part of the current XML contract yet:
+
+- Dedicated new-development/project support beyond the existing listing-level `construction_stage` fields.
+- Additional listing attributes.
+
+No placeholder XML elements are reserved for these features. Their structures and validation rules will be added in follow-up revisions before they are accepted in production feeds.
 
 ### Common Structure Errors
 

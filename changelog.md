@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.0.0] - 2026-09-09
+
+### v2.0.0 (Draft)
+
+### Added
+
+- Optional `<branches>` collection for offices, brands, or operational units owned by the feed owner.
+- Required `id` and `name` fields for each declared branch.
+- Optional branch logo, WhatsApp number, call phone number, and email.
+- Extensible branch verification entries expressed as `type` and `value` pairs.
+- Optional listing-level `<branch_id>` referencing the branch responsible for a listing.
+
+### Compatibility
+
+- The `<owner>` block remains unchanged and represents the owner of the feed and its branches.
+- Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
+- Branch-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
+
+### Planned Follow-ups
+
+- Dedicated new-development/project support.
+- Additional listing attributes.
+
+These planned items do not introduce XML elements or validation rules yet.
+
 ## [1.0.0] - 2025-10-17
 
 ### v1.0.0
@@ -205,5 +230,4 @@ Planned for future versions:
 ---
 
 **Note**: This is the initial stable release. All features are production-ready and fully supported. For implementation guidance, refer to the comprehensive documentation and examples provided.
-
 
