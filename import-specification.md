@@ -168,6 +168,7 @@ RERA uses the following reference pipeline. Companies reusing this standard can 
 3. Listings are grouped into batches of 50 and placed on a processing queue.
 4. Queue workers validate, normalize, and process each batch independently.
 5. Temporary files are removed after the feed has been read, and the import run is completed only after its queued work finishes.
+6. After a successful complete import, previously imported listings that were not present in the new snapshot are archived. A failed or incomplete import must not trigger this archival step.
 
 This keeps memory usage bounded by the streaming parser and batch size instead of the total feed size. The value of 50 is RERA's reference worker batch size, not a required part of the XML format; another consumer may tune it for its own infrastructure.
 
@@ -220,12 +221,16 @@ function processListingBatch(batch):
         if changes.any:
             updateChangedParts(listing, changes)
             storeFingerprints(listing.id, fingerprints)
+
+function finalizeSuccessfulImport(importRun):
+    archivePreviouslyImportedListingsNotSeenIn(importRun)
 ```
 
 ### Feed Publisher Recommendations
 
 - Generate the feed in a background job every hour or more frequently when fresher listings are required.
 - Publish a complete snapshot at a stable URL. Pagination is not needed or recommended for this XML format.
+- Never publish a partial snapshot as a successful feed: missing listing IDs are interpreted as listings that are no longer available.
 - Write the new feed to a temporary file and replace the published file atomically, so consumers never download a partially generated document.
 - Prevent overlapping generator runs, especially when generation can take longer than its schedule interval.
 - Keep image binaries outside the XML and provide stable public image URLs. Optimize and cache those images independently.
@@ -484,6 +489,14 @@ If `<agents>` is omitted, or if a listing does not contain `<agent_id>`, no spec
 The `<developments>` block is optional and contains new-build projects referenced by listings. Each `<development>` must have an `id` and a `name`. A feed may define any number of developments.
 
 Each sellable property remains a separate `<listing>`. Common project information belongs to `<development>`, while price, area, floor, bedrooms, availability, contacts, and other unit-specific data remain on the listing. Listing values are authoritative and are not implicitly inherited from the development.
+
+#### Development Units and Availability
+
+A listing with `<development_id>` is a unit of that development. It keeps the full listing structure and provides the unit's detailed information, including price, area, floor, rooms, images, attributes, and availability-related data.
+
+XML feeds are complete snapshots. An available unit must be included as an active listing in every generated feed. When that listing is no longer present in a successfully processed snapshot, RERA archives it instead of deleting it permanently. An archived unit is removed from active listing results but remains publicly visible within its development as no longer available.
+
+This archival decision is made only after the complete feed and all of its queued batches have been processed successfully. A download, parsing, validation, or worker failure must not make units unavailable. Feed publishers must therefore use stable listing IDs, must not reuse an old unit ID for another property, and must publish complete snapshots atomically.
 
 ```xml
 <developments>
@@ -1060,6 +1073,7 @@ Rules differ by offer_type. Use the sections below. General rules:
 
 #### residential_plot_type
 - Type: single
+- Required: `false`
 - Values: detached_house, apartment_complex, subdivided_plot
 - Description: Plot type for residential properties (only for land_plots).
 
@@ -1284,11 +1298,9 @@ xmlstarlet val your-feed.xml
 - [ ] Currency is "EUR"
 - [ ] All enum values match specification exactly
 
-## Version 2 Roadmap
+## Version 2 Attribute Coverage
 
-Additional listing attributes are planned for a follow-up v2 revision but are not part of the current XML contract yet.
-
-No placeholder XML elements are reserved for this work. The fields and validation rules will be added in a follow-up revision before they are accepted in production feeds.
+The version 2 attribute reference is synchronized with the current RERA listing attribute catalog. Only active attributes and enum values are part of the XML contract; internal or proposed attributes that are not active are intentionally excluded.
 
 ### Common Structure Errors
 

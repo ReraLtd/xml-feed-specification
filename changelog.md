@@ -19,6 +19,8 @@
 - Optional listing-level `<development_id>` linking a sellable unit to its development.
 - A simple block model: each block is represented as a separate development with the block identified in `id`, `name`, or both.
 - Optional development-level `<branch_id>` and `<agent_id>` using the same agent, branch, and owner contact priority as listings.
+- Development listings are defined as detailed units. Units missing from a successfully processed complete snapshot are archived and remain visible within the project as unavailable.
+- Full example coverage for the supported `with_freight_elevator` and `with_tumble_dryer` attributes.
 
 ### Compatibility
 
@@ -37,12 +39,7 @@
 - `<created_at>` and `<updated_at>` are optional. RERA detects changes by comparing stored fingerprints for listing data, attributes, photos, and text content.
 - Large XML feeds are consumed as complete snapshots with streaming parsing and queued worker batches of 50 listings; pagination is not required.
 - Feed publishers should regenerate their XML in a background job every hour or more frequently and publish updates atomically.
-
-### Planned Follow-ups
-
-- Additional listing attributes.
-
-These planned items do not introduce XML elements or validation rules yet.
+- The version 2 attribute reference is synchronized with the current active RERA attribute catalog.
 
 ## [1.0.0] - 2025-10-17
 

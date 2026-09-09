@@ -128,6 +128,7 @@ This page contains comprehensive XML feed examples covering all major property t
       <with_tv/>
       <with_fridge/>
       <with_washing_machine/>
+      <with_tumble_dryer/>
       <with_dishwasher/>
       <with_interactive_tv/>
       <smoking_allowed/>
@@ -172,6 +173,7 @@ This page contains comprehensive XML feed examples covering all major property t
       <balconies/>
       <loggias/>
       <elevator_count/>
+      <with_freight_elevator/>
       <building_class/>
       <energy_class/>
       <security_systems/>
