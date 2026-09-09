@@ -287,7 +287,6 @@ function processListingBatch(batch):
       <name></name>
       <branch_id></branch_id>
       <agent_id></agent_id>
-      <developer_name></developer_name>
       <description></description>
       <construction_stage></construction_stage>
       <estimated_completion_at></estimated_completion_at>
@@ -493,7 +492,6 @@ Each sellable property remains a separate `<listing>`. Common project informatio
     <name>Sunset Residences — Block A</name>
     <branch_id>limassol-main</branch_id>
     <agent_id>agent-42</agent_id>
-    <developer_name>Example Development Ltd</developer_name>
     <description>New residential development in Limassol.</description>
     <construction_stage>under_construction</construction_stage>
     <estimated_completion_at>2027-06-30</estimated_completion_at>
@@ -531,11 +529,6 @@ Each sellable property remains a separate `<listing>`. Common project informatio
 - Type: string
 - Required: `false`
 - Description: ID of the agent assigned to the development. When present, it must exactly match an `<agents><agent><id>` value in the same feed. It is used for public display only when the owner-level `<agent_flow_enabled>` setting is `1`.
-
-#### development.developer_name
-- Type: string
-- Required: `false`
-- Description: Public name of the property developer. This is descriptive project information and does not affect listing ownership or contact priority.
 
 #### development.description
 - Type: string
