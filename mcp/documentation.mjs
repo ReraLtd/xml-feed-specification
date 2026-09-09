@@ -24,6 +24,12 @@ export const documents = [
     file: 'examples.md'
   },
   {
+    id: 'engineering-prompt',
+    title: 'Engineering prompt for a RERA XML feed integration',
+    description: 'A ready-to-use coding-agent prompt for integrating feed generation into an existing project.',
+    file: 'engineering-prompt.md'
+  },
+  {
     id: 'changelog',
     title: 'Specification changelog',
     description: 'Version history and changes to the specification.',
