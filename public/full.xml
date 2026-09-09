@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url/>
@@ -11,9 +11,58 @@
     <whatsapp_number/>
     <phone_number/>
     <email/>
+    <show_approximate_location>0</show_approximate_location>
+    <agent_flow_enabled>1</agent_flow_enabled>
   </owner>
+  <branches>
+    <branch>
+      <id>limassol-main</id>
+      <name>RERA Limassol</name>
+      <logo_url>https://cdn.example.com/branches/limassol.png</logo_url>
+      <whatsapp_number>+35799123456</whatsapp_number>
+      <phone_number>+35725123456</phone_number>
+      <email>limassol@example.com</email>
+      <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
+    </branch>
+  </branches>
+  <agents>
+    <agent>
+      <id>agent-42</id>
+      <name>Alex Morgan</name>
+      <photo_url>https://cdn.example.com/agents/alex-morgan.jpg</photo_url>
+      <whatsapp_number>+35799111222</whatsapp_number>
+      <phone_number>+35725111222</phone_number>
+      <email>alex.morgan@example.com</email>
+      <verification>Lic. No 1234-567E</verification>
+    </agent>
+  </agents>
+  <developments>
+    <development>
+      <id>sunset-residences-block-a</id>
+      <name>Sunset Residences — Block A</name>
+      <branch_id>limassol-main</branch_id>
+      <agent_id>agent-42</agent_id>
+      <description>New residential development in Limassol.</description>
+      <construction_stage>under_construction</construction_stage>
+      <estimated_completion_at>2027-06-30</estimated_completion_at>
+      <city>Limassol</city>
+      <pin_map>
+        <latitude>34.700000</latitude>
+        <longitude>33.050000</longitude>
+        <formatted_address>Limassol, Cyprus</formatted_address>
+      </pin_map>
+      <images>
+        <image>
+          <url>https://cdn.example.com/developments/sunset-a.jpg</url>
+        </image>
+      </images>
+    </development>
+  </developments>
   <listing>
     <!-- Default -->
+    <development_id>sunset-residences-block-a</development_id>
+    <branch_id/>
+    <agent_id/>
     <id/>
     <ref/>
     <status/>
@@ -79,6 +128,7 @@
       <with_tv/>
       <with_fridge/>
       <with_washing_machine/>
+      <with_tumble_dryer/>
       <with_dishwasher/>
       <with_interactive_tv/>
       <smoking_allowed/>
@@ -123,6 +173,7 @@
       <balconies/>
       <loggias/>
       <elevator_count/>
+      <with_freight_elevator/>
       <building_class/>
       <energy_class/>
       <security_systems/>

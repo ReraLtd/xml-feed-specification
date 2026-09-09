@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url>http://cdn.rera.cy/agency_logo.png</logo_url>

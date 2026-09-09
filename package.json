@@ -1,6 +1,6 @@
 {
   "name": "@reraltd/xml-feed-specification",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "RERA XML feed specification",
   "main": "index.js",
   "scripts": {

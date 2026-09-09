@@ -9,7 +9,7 @@ This page contains comprehensive XML feed examples covering all major property t
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url/>
@@ -19,9 +19,58 @@ This page contains comprehensive XML feed examples covering all major property t
     <whatsapp_number/>
     <phone_number/>
     <email/>
+    <show_approximate_location>0</show_approximate_location>
+    <agent_flow_enabled>1</agent_flow_enabled>
   </owner>
+  <branches>
+    <branch>
+      <id>limassol-main</id>
+      <name>RERA Limassol</name>
+      <logo_url>https://cdn.example.com/branches/limassol.png</logo_url>
+      <whatsapp_number>+35799123456</whatsapp_number>
+      <phone_number>+35725123456</phone_number>
+      <email>limassol@example.com</email>
+      <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
+    </branch>
+  </branches>
+  <agents>
+    <agent>
+      <id>agent-42</id>
+      <name>Alex Morgan</name>
+      <photo_url>https://cdn.example.com/agents/alex-morgan.jpg</photo_url>
+      <whatsapp_number>+35799111222</whatsapp_number>
+      <phone_number>+35725111222</phone_number>
+      <email>alex.morgan@example.com</email>
+      <verification>Lic. No 1234-567E</verification>
+    </agent>
+  </agents>
+  <developments>
+    <development>
+      <id>sunset-residences-block-a</id>
+      <name>Sunset Residences — Block A</name>
+      <branch_id>limassol-main</branch_id>
+      <agent_id>agent-42</agent_id>
+      <description>New residential development in Limassol.</description>
+      <construction_stage>under_construction</construction_stage>
+      <estimated_completion_at>2027-06-30</estimated_completion_at>
+      <city>Limassol</city>
+      <pin_map>
+        <latitude>34.700000</latitude>
+        <longitude>33.050000</longitude>
+        <formatted_address>Limassol, Cyprus</formatted_address>
+      </pin_map>
+      <images>
+        <image>
+          <url>https://cdn.example.com/developments/sunset-a.jpg</url>
+        </image>
+      </images>
+    </development>
+  </developments>
   <listing>
     <!-- Default -->
+    <development_id>sunset-residences-block-a</development_id>
+    <branch_id/>
+    <agent_id/>
     <id/>
     <ref/>
     <status/>
@@ -79,6 +128,7 @@ This page contains comprehensive XML feed examples covering all major property t
       <with_tv/>
       <with_fridge/>
       <with_washing_machine/>
+      <with_tumble_dryer/>
       <with_dishwasher/>
       <with_interactive_tv/>
       <smoking_allowed/>
@@ -123,6 +173,7 @@ This page contains comprehensive XML feed examples covering all major property t
       <balconies/>
       <loggias/>
       <elevator_count/>
+      <with_freight_elevator/>
       <building_class/>
       <energy_class/>
       <security_systems/>
@@ -196,7 +247,7 @@ Each example demonstrates:
 - All coordinates are within Cyprus bounds (latitude 34.520948–35.712796, longitude 32.211971–34.608660)
 - Prices reflect realistic market ranges for different property types and locations
 - Energy classes, planning zones, and other enums use only valid specification values
-- Each listing includes creation and update timestamps
+- Example listings include optional creation and update timestamps
 - Image URLs follow the CDN pattern with proper large/medium/small suffix support
 
 ## Customization Guide
@@ -209,7 +260,7 @@ When adapting these examples for your feed:
 4. **Adjust Pricing**: Set realistic prices for your market position
 5. **Update Images**: Replace with your actual CDN URLs or image hosting solution  
 6. **Customize Descriptions**: Write compelling, accurate property descriptions
-7. **Set Proper Timestamps**: Use actual creation and modification dates
+7. **Add Timestamps When Available**: Optional `created_at` and `updated_at` values should use actual source-system dates
 8. **Review Attributes**: Include only relevant attributes for each specific property
 
 **Note on External Integrations**: If your feed comes from an external system integration, the owner information can be updated and changed in RERA.CY based on the data provided by the external platform during synchronization.

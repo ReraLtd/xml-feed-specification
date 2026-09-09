@@ -1,5 +1,25 @@
 # XML Import Specification
 
+RERA XML v2 is more than a listing export. It is an open, reusable model for exchanging properties together with their developments, unit availability, organizational ownership, contact routing, and large-scale synchronization behavior.
+
+## What's New in Version 2
+
+**Developments and Detailed Units**: Define reusable projects through `<developments>` and connect each sellable unit with `<development_id>`. A unit keeps the full detail of a normal listing.
+
+**Availability That Preserves Project History**: When a unit disappears from a successfully processed complete snapshot, it is archived from active search but remains visible inside its development as unavailable.
+
+**Owner, Branch, and Agent Hierarchy**: Model multi-branch organizations and reusable agents directly in the feed. Listings and developments can select their responsible branch and agent without duplicating contact data.
+
+**Predictable Contact Routing**: Contacts resolve in a documented order: assigned agent when agent flow is enabled, then referenced branch, then feed owner.
+
+**Privacy-Aware Locations**: Supply accurate coordinates while controlling whether users see the exact or an approximate public location.
+
+**Large Feeds Without Pagination**: Publish complete snapshots and process them with streaming XML readers, bounded worker batches, and atomic feed updates.
+
+**Fingerprint-Based Change Detection**: Compare listing data, attributes, photos, and text content directly. The optional `created_at` and `updated_at` fields are not required to detect updates.
+
+Together, these capabilities make the specification suitable not only for RERA integrations, but also as a practical foundation for portals, CRMs, agencies, developers, and other companies building their own real estate data pipelines.
+
 ## Getting Started
 
 Welcome to the RERA XML Import Specification! This document provides everything you need to create compliant property listing feeds for the Cyprus Real Estate system.
@@ -27,7 +47,10 @@ Before you begin, ensure you have:
 ### What You'll Learn
 
 - XML feed structure and required elements
+- Development and unit lifecycle modeling
+- Owner, branch, and agent contact routing
 - Property types and their specific attributes 
+- Streaming processing for large complete snapshots
 - Image handling and CDN integration
 - Validation and testing procedures
 - Common integration issues and solutions
@@ -70,9 +93,15 @@ The specification covers all major property categories in Cyprus:
 
 ### Key Features
 
-**Comprehensive Attribute System**: Over 100+ attributes covering everything from basic details (price, area, location) to specific amenities (smart home features, pet policies, parking types).
+**Comprehensive Attribute System**: More than 60 active typed attributes covering everything from basic details to amenities, planning zones, accessibility, and commercial features.
 
 **Flexible Structure**: Required core fields ensure data integrity, while extensive optional attributes let you showcase unique property features.
+
+**Development and Unit Lifecycle**: Connect listings to new developments while preserving unavailable units as part of the public project history.
+
+**Organizational Contact Model**: Represent owners, branches, and agents once, then assign them independently to listings and developments.
+
+**Built for Large Inventories**: Complete snapshots, streaming parsing, queued batches, and fingerprint-based change detection remove the need for feed pagination.
 
 **Multi-language Support**: Descriptions in English, Greek, or Russian with automatic translation to other languages.
 
@@ -155,14 +184,88 @@ Follow these best practices to ensure successful feed processing and optimal lis
 ❌ **Missing Images**: Include at least 3-5 quality property photos  
 ❌ **Inconsistent Pricing**: Ensure price matches currency and market expectations  
 
-### Performance Optimization
+## Processing Large XML Feeds
 
-- **Feed Size**: Keep individual feeds under 50MB for faster processing
-- **Batch Updates**: Group related changes together rather than frequent small updates  
-- **Image Optimization**: Compress images appropriately while maintaining quality
-- **Caching**: Implement proper image CDN caching for faster load times
+The XML feed is designed to work as a complete snapshot, including for large inventories. Do not add pagination or require consumers to load the whole document into memory. Large feeds should be handled with streaming XML parsing.
 
-### Testing Recommendations
+### How RERA Processes Large XML Feeds
+
+RERA uses the following reference pipeline. Companies reusing this standard can use the same architecture:
+
+1. A scheduled import downloads the complete XML file to temporary storage. The response is written directly to disk rather than buffered entirely in memory.
+2. Feed metadata is read once, then `<listing>` elements are collected incrementally with a streaming XML reader.
+3. Listings are grouped into batches of 50 and placed on a processing queue.
+4. Queue workers validate, normalize, and process each batch independently.
+5. Temporary files are removed after the feed has been read, and the import run is completed only after its queued work finishes.
+6. After a successful complete import, previously imported listings that were not present in the new snapshot are archived. A failed or incomplete import must not trigger this archival step.
+
+This keeps memory usage bounded by the streaming parser and batch size instead of the total feed size. The value of 50 is RERA's reference worker batch size, not a required part of the XML format; another consumer may tune it for its own infrastructure.
+
+### Change Detection
+
+RERA does not rely on `<created_at>` or `<updated_at>` to detect changes. It stores and compares deterministic fingerprints for each listing. These fingerprints cover:
+
+- Core listing data and attributes.
+- Photo URLs.
+- Text content (`title` and `description`).
+
+This allows a consumer to identify what changed and avoid repeating unaffected work. Timestamps are therefore optional metadata. Consumers should not reject a listing because either timestamp is absent, and should not use timestamps as their only change-detection mechanism.
+
+### Minimal Consumer Skeleton
+
+The following pseudocode intentionally shows only the XML processing model:
+
+```text
+function importXmlFeed(feedUrl):
+    temporaryFile = downloadToTemporaryFile(feedUrl)
+
+    try:
+        metadata = readFeedMetadata(temporaryFile)
+        batch = []
+
+        for listing in streamElements(temporaryFile, "listing"):
+            batch.append({ metadata, listing })
+
+            if batch.size == 50:
+                enqueueListingBatch(batch)
+                batch = []
+
+        if batch is not empty:
+            enqueueListingBatch(batch)
+    finally:
+        deleteTemporaryFile(temporaryFile)
+
+function processListingBatch(batch):
+    for item in batch:
+        listing = validateAndNormalize(item)
+        fingerprints = buildFingerprints(
+            listingData = listing.coreData,
+            attributes = listing.attributes,
+            photos = listing.imageUrls,
+            text = [listing.title, listing.description]
+        )
+
+        changes = compareWithStoredFingerprints(listing.id, fingerprints)
+
+        if changes.any:
+            updateChangedParts(listing, changes)
+            storeFingerprints(listing.id, fingerprints)
+
+function finalizeSuccessfulImport(importRun):
+    archivePreviouslyImportedListingsNotSeenIn(importRun)
+```
+
+### Feed Publisher Recommendations
+
+- Generate the feed in a background job every hour or more frequently when fresher listings are required.
+- Publish a complete snapshot at a stable URL. Pagination is not needed or recommended for this XML format.
+- Never publish a partial snapshot as a successful feed: missing listing IDs are interpreted as listings that are no longer available.
+- Write the new feed to a temporary file and replace the published file atomically, so consumers never download a partially generated document.
+- Prevent overlapping generator runs, especially when generation can take longer than its schedule interval.
+- Keep image binaries outside the XML and provide stable public image URLs. Optimize and cache those images independently.
+- Keep listing IDs stable between runs so consumers can compare records reliably.
+
+## Testing Recommendations
 
 1. **Start Small**: Test with 2-3 properties before full integration
 2. **Validate Structure**: Use XML validation tools before submission
@@ -177,7 +280,7 @@ Follow these best practices to ensure successful feed processing and optimal lis
 ```xml
 <root>
   <rera>
-    <feed_version>1</feed_version>
+    <feed_version>2</feed_version>
   </rera>
   <owner>
     <logo_url></logo_url>
@@ -187,16 +290,69 @@ Follow these best practices to ensure successful feed processing and optimal lis
     <whatsapp_number></whatsapp_number>
     <phone_number></phone_number>
     <email></email>
+    <show_approximate_location></show_approximate_location>
+    <agent_flow_enabled></agent_flow_enabled>
   </owner>
+  <branches>
+    <branch>
+      <id></id>
+      <name></name>
+      <logo_url></logo_url>
+      <whatsapp_number></whatsapp_number>
+      <phone_number></phone_number>
+      <email></email>
+      <verification></verification>
+    </branch>
+  </branches>
+  <agents>
+    <agent>
+      <id></id>
+      <name></name>
+      <photo_url></photo_url>
+      <whatsapp_number></whatsapp_number>
+      <phone_number></phone_number>
+      <email></email>
+      <verification></verification>
+    </agent>
+  </agents>
+  <developments>
+    <development>
+      <id></id>
+      <name></name>
+      <branch_id></branch_id>
+      <agent_id></agent_id>
+      <description></description>
+      <construction_stage></construction_stage>
+      <estimated_completion_at></estimated_completion_at>
+      <city></city>
+      <pin_map>
+        <latitude></latitude>
+        <longitude></longitude>
+        <formatted_address></formatted_address>
+      </pin_map>
+      <images>
+        <image>
+          <url></url>
+        </image>
+      </images>
+    </development>
+  </developments>
   <listing>
+    <development_id></development_id>
+    <branch_id></branch_id>
+    <agent_id></agent_id>
     <!-- Listing fields -->
   </listing>
 </root>
 ```
 
+### Feed Version
+
+Version 2 adds branch-level ownership, agent information, new developments, and feed-wide owner settings. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only owner settings, `<branches>`, `<agents>`, `<developments>`, `<branch_id>`, `<agent_id>`, or `<development_id>` elements.
+
 ### Owner Information
 
-The `<owner>` block contains information about the property owner or listing agent. All fields are optional.
+The `<owner>` block contains information about the organization that owns the feed and its branches. Version 2 retains the version 1 identity and contact fields and adds two optional feed-wide settings. All fields are optional.
 
 **Important**: If owner information is provided from external systems during integration, this data can be updated and changed in the RERA.CY system. When syncing from external platforms, the owner details may be modified in RERA based on the latest information from the integrated system.
 
@@ -235,7 +391,258 @@ The `<owner>` block contains information about the property owner or listing age
 - Required: `false`
 - Description: Contact email address.
 
+#### show_approximate_location
+- Type: boolean (`1`/`0`)
+- Required: `false`
+- Default: `0`
+- Description: Controls public location display for every listing in the feed. Set to `1` to show users an approximate location instead of the exact location, or `0` to show the exact location. Exact coordinates are still required in each listing's `<pin_map>`; this setting changes presentation only.
+
+#### agent_flow_enabled
+- Type: boolean (`1`/`0`)
+- Required: `false`
+- Default: `0`
+- Description: Controls whether listings may display both the agency and an assigned agent. Set to `1` to use valid listing `<agent_id>` references and make agent contacts primary. Set to `0` to display only the agency; any `<agent_id>` values are then ignored for public display.
+
+### Branch Information (version 2)
+
+The `<branches>` block is optional and contains the offices, brands, or operational units managed by the feed owner. Each `<branch>` must have an `id` and a `name`. A feed may define any number of branches.
+
+Branches only determine listing ownership. If `<branches>` is omitted, or if a listing does not contain `<branch_id>`, the `<owner>` is considered the owner of that listing. This also applies when branches are declared but only some listings reference them.
+
+```xml
+<branches>
+  <branch>
+    <id>limassol-main</id>
+    <name>RERA Limassol</name>
+    <logo_url>https://cdn.example.com/branches/limassol.png</logo_url>
+    <whatsapp_number>+35799123456</whatsapp_number>
+    <phone_number>+35725123456</phone_number>
+    <email>limassol@example.com</email>
+    <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
+  </branch>
+</branches>
+```
+
+#### branch.id
+- Type: string
+- Required: `true`
+- Description: Stable branch identifier from the feed provider's system, used only to determine which branch owns a listing. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different branch.
+
+#### branch.name
+- Type: string
+- Required: `true`
+- Description: Public branch name.
+
+#### branch.logo_url
+- Type: url
+- Required: `false`
+- Description: Public URL of the branch logo. When omitted, the owner logo may be used.
+
+#### branch.whatsapp_number
+- Type: string
+- Required: `false`
+- Description: Branch WhatsApp number, including the country code (for example, `+357`).
+
+#### branch.phone_number
+- Type: string
+- Required: `false`
+- Description: Branch phone number for calls, including the country code (for example, `+357`).
+
+#### branch.email
+- Type: string
+- Required: `false`
+- Description: Branch contact email address.
+
+#### branch.verification
+- Type: string
+- Required: `false`
+- Description: Free-form branch verification information, such as a company registration number, real estate licence, or both. Example: `Reg. no HE123456, Lic. No 1234-567E`.
+
+### Agent Information (version 2)
+
+The `<agents>` block is optional and contains agents that may be assigned to listings. Each `<agent>` must have an `id` and a `name`. A feed may define any number of agents.
+
+If `<agents>` is omitted, or if a listing does not contain `<agent_id>`, no specific agent is assigned to that listing. This also applies when agents are declared but only some listings reference them.
+
+```xml
+<agents>
+  <agent>
+    <id>agent-42</id>
+    <name>Alex Morgan</name>
+    <photo_url>https://cdn.example.com/agents/alex-morgan.jpg</photo_url>
+    <whatsapp_number>+35799111222</whatsapp_number>
+    <phone_number>+35725111222</phone_number>
+    <email>alex.morgan@example.com</email>
+    <verification>Lic. No 1234-567E</verification>
+  </agent>
+</agents>
+```
+
+#### agent.id
+- Type: string
+- Required: `true`
+- Description: Stable agent identifier from the feed provider's system, used only to determine which agent is assigned to a listing. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different agent.
+
+#### agent.name
+- Type: string
+- Required: `true`
+- Description: Public agent name.
+
+#### agent.photo_url
+- Type: url
+- Required: `false`
+- Description: Public URL of the agent's profile photo.
+
+#### agent.whatsapp_number
+- Type: string
+- Required: `false`
+- Description: Agent WhatsApp number, including the country code (for example, `+357`).
+
+#### agent.phone_number
+- Type: string
+- Required: `false`
+- Description: Agent phone number for calls, including the country code (for example, `+357`).
+
+#### agent.email
+- Type: string
+- Required: `false`
+- Description: Agent contact email address.
+
+#### agent.verification
+- Type: string
+- Required: `false`
+- Description: Free-form agent verification information, such as a real estate licence or registration number. Example: `Lic. No 1234-567E`.
+
+### New Development Information (version 2)
+
+The `<developments>` block is optional and contains new-build projects referenced by listings. Each `<development>` must have an `id` and a `name`. A feed may define any number of developments.
+
+Each sellable property remains a separate `<listing>`. Common project information belongs to `<development>`, while price, area, floor, bedrooms, availability, contacts, and other unit-specific data remain on the listing. Listing values are authoritative and are not implicitly inherited from the development.
+
+#### Development Units and Availability
+
+A listing with `<development_id>` is a unit of that development. It keeps the full listing structure and provides the unit's detailed information, including price, area, floor, rooms, images, attributes, and availability-related data.
+
+XML feeds are complete snapshots. An available unit must be included as an active listing in every generated feed. When that listing is no longer present in a successfully processed snapshot, RERA archives it instead of deleting it permanently. An archived unit is removed from active listing results but remains publicly visible within its development as no longer available.
+
+This archival decision is made only after the complete feed and all of its queued batches have been processed successfully. A download, parsing, validation, or worker failure must not make units unavailable. Feed publishers must therefore use stable listing IDs, must not reuse an old unit ID for another property, and must publish complete snapshots atomically.
+
+```xml
+<developments>
+  <development>
+    <id>sunset-residences-block-a</id>
+    <name>Sunset Residences — Block A</name>
+    <branch_id>limassol-main</branch_id>
+    <agent_id>agent-42</agent_id>
+    <description>New residential development in Limassol.</description>
+    <construction_stage>under_construction</construction_stage>
+    <estimated_completion_at>2027-06-30</estimated_completion_at>
+    <city>Limassol</city>
+    <pin_map>
+      <latitude>34.700000</latitude>
+      <longitude>33.050000</longitude>
+      <formatted_address>Limassol, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>https://cdn.example.com/developments/sunset-a.jpg</url>
+      </image>
+    </images>
+  </development>
+</developments>
+```
+
+#### development.id
+- Type: string
+- Required: `true`
+- Description: Stable development identifier from the feed provider's system. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different development.
+
+#### development.name
+- Type: string
+- Required: `true`
+- Description: Public development name. Include the block name here when the project contains independently represented blocks.
+
+#### development.branch_id
+- Type: string
+- Required: `false`
+- Description: ID of the branch that owns the development. When present, it must exactly match a `<branches><branch><id>` value in the same feed. If omitted, `<owner>` is the development's agency.
+
+#### development.agent_id
+- Type: string
+- Required: `false`
+- Description: ID of the agent assigned to the development. When present, it must exactly match an `<agents><agent><id>` value in the same feed. It is used for public display only when the owner-level `<agent_flow_enabled>` setting is `1`.
+
+#### development.description
+- Type: string
+- Required: `false`
+- Description: Plain-text development description without HTML. English, Greek, and Russian are accepted; use only one language in a single value.
+
+#### development.construction_stage
+- Type: enum
+- Required: `false`
+- Values: `off_plan`, `under_construction`, `new_build`
+- Description: Current stage of the development.
+
+#### development.estimated_completion_at
+- Type: date (YYYY-MM-DD)
+- Required: `false` (`true` when `construction_stage` is `off_plan` or `under_construction`)
+- Description: Estimated completion date for the development.
+
+#### development.city
+- Type: enum
+- Required: `false`
+- Description: Development municipality. Uses the same allowed values as listing `<city>`.
+
+#### development.pin_map
+- Type: object
+- Required: `false`
+- Description: Development latitude, longitude, and formatted address. Uses the same structure and coordinate rules as listing `<pin_map>`.
+
+#### development.images
+- Type: collection
+- Required: `false`
+- Description: Public development image URLs. Uses the same `<images><image><url>` structure and image requirements as listing images.
+
+#### Representing Blocks
+
+Version 2 does not define separate `<blocks>` or `<buildings>` elements. If a project contains multiple blocks that need to be distinguished, represent each block as a separate `<development>` and include the block in its `id`, its `name`, or both. Listings then reference the appropriate block through `<development_id>`.
+
+#### Development Contact Priority
+
+Development contacts use the same priority as listing contacts:
+
+1. If `<agent_flow_enabled>` is `1` and the development has a valid `<agent_id>`, the agent's contacts are primary. The selected agency is also displayed.
+2. Otherwise, if the development has a valid `<branch_id>`, the branch contacts are used.
+3. Otherwise, the owner contacts are used.
+
+If both references are omitted, `<owner>` is the development's main contact. Development-level `branch_id` and `agent_id` apply only to the development itself. Linked listings do not inherit them and continue to use their own contact references.
+
+### Listing Contact Priority
+
+The agency displayed for a listing is its referenced branch when `<branch_id>` is present and valid; otherwise it is `<owner>`. Public contact details are selected in this order:
+
+1. If `<agent_flow_enabled>` is `1` and the listing has a valid `<agent_id>`, the agent's contacts are primary. The selected agency (branch or owner) is also displayed.
+2. Otherwise, if the listing has a valid `<branch_id>`, the branch contacts are used.
+3. Otherwise, the owner contacts are used.
+
+When `<agent_flow_enabled>` is `0`, the first rule is skipped even if the listing contains `<agent_id>`.
+
 ### Listing Fields
+
+#### development_id
+- Type: string
+- Required: `false`
+- Description: ID of the new development containing the listing. When present, it must exactly match a `<developments><development><id>` value in the same feed. If omitted, the listing is treated as a standalone property. This field does not affect listing ownership or contact priority.
+
+#### branch_id
+- Type: string
+- Required: `false`
+- Description: ID of the branch that owns the listing. It is used only to determine listing ownership and must exactly match a `<branches><branch><id>` value in the same feed. If omitted, the `<owner>` owns the listing, including when the feed declares other branches.
+
+#### agent_id
+- Type: string
+- Required: `false`
+- Description: ID of the agent assigned to the listing. It is used only to identify the responsible agent and must exactly match an `<agents><agent><id>` value in the same feed. If omitted, no specific agent is assigned, including when the feed declares other agents.
 
 #### id
 - Type: number
@@ -349,13 +756,13 @@ The `<owner>` block contains information about the property owner or listing age
 
 #### created_at
 - Type: datetime (YYYY-MM-DD HH:MM:SS)
-- Required: `true`
-- Description: Feed item creation timestamp.
+- Required: `false`
+- Description: Original creation timestamp from the source system, when available. It is informational and is not required for change detection.
 
 #### updated_at
 - Type: datetime (YYYY-MM-DD HH:MM:SS)
-- Required: `true`
-- Description: Last update timestamp.
+- Required: `false`
+- Description: Last update timestamp from the source system, when available. It is informational and is not required for change detection.
 
 #### title
 - Type: string
@@ -695,6 +1102,7 @@ Rules differ by offer_type. Use the sections below. General rules:
 
 #### residential_plot_type
 - Type: single
+- Required: `false`
 - Values: detached_house, apartment_complex, subdivided_plot
 - Description: Plot type for residential properties (only for land_plots).
 
@@ -882,11 +1290,22 @@ xmlstarlet val your-feed.xml
 **✅ Required Elements Present:**
 - [ ] XML declaration with UTF-8 encoding
 - [ ] Root `<root>` element containing all content
-- [ ] RERA version block: `<rera><feed_version>1</feed_version></rera>`
+- [ ] RERA version block: `<rera><feed_version>2</feed_version></rera>`
 - [ ] Owner information block `<owner>` (all fields optional)
+- [ ] Optional owner settings use boolean `1` or `0`
+- [ ] Optional `<branches>` block uses unique, non-empty branch IDs
+- [ ] Optional `<agents>` block uses unique, non-empty agent IDs
+- [ ] Optional `<developments>` block uses unique, non-empty development IDs
 - [ ] At least one `<listing>` element
 
+**✅ Every Development Contains:**
+- [ ] Unique non-empty `<id>` and a public `<name>`
+- [ ] Optional `<branch_id>` and `<agent_id>` match entries declared in the same feed
+
 **✅ Every Listing Contains:**
+- [ ] Optional `<branch_id>` matches a branch declared in the same feed; when omitted, the listing belongs to `<owner>`
+- [ ] Optional `<agent_id>` matches an agent declared in the same feed
+- [ ] Optional `<development_id>` matches a development declared in the same feed
 - [ ] Unique numeric `<id>`
 - [ ] String `<ref>` (your reference code)
 - [ ] Valid `<status>` (typically "active")
@@ -894,7 +1313,6 @@ xmlstarlet val your-feed.xml
 - [ ] Enum `<offer_type>` (residential/commercial)
 - [ ] Numeric `<price>` and `<currency>`
 - [ ] Numeric `<full_area>`
-- [ ] ISO datetime `<created_at>` and `<updated_at>`
 - [ ] Text `<description>`
 - [ ] Enum `<city>` (valid Cyprus municipality)
 - [ ] Pin map with latitude, longitude, formatted_address
@@ -903,11 +1321,15 @@ xmlstarlet val your-feed.xml
 
 **✅ Data Format Validation:**
 - [ ] Dates in YYYY-MM-DD format
-- [ ] Datetimes in YYYY-MM-DD HH:MM:SS format
+- [ ] Optional datetimes, when supplied, use YYYY-MM-DD HH:MM:SS format
 - [ ] Numbers are valid (not text, not empty)
 - [ ] GPS coordinates within Cyprus bounds
 - [ ] Currency is "EUR"
 - [ ] All enum values match specification exactly
+
+## Version 2 Attribute Coverage
+
+The version 2 attribute reference is synchronized with the current RERA listing attribute catalog. Only active attributes and enum values are part of the XML contract; internal or proposed attributes that are not active are intentionally excluded.
 
 ### Common Structure Errors
 
