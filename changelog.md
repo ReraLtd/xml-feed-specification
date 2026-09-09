@@ -15,6 +15,9 @@
 - Optional listing-level `<agent_id>` referencing the agent responsible for a listing.
 - Optional owner-level `<show_approximate_location>` setting controlling exact versus approximate public location display.
 - Optional owner-level `<agent_flow_enabled>` setting controlling whether an assigned agent and their contacts are displayed alongside the agency.
+- Optional `<developments>` collection for shared new-development metadata.
+- Optional listing-level `<development_id>` linking a sellable unit to its development.
+- A simple block model: each block is represented as a separate development with the block identified in `id`, `name`, or both.
 
 ### Compatibility
 
@@ -25,7 +28,7 @@
 - Agent IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine the agent assigned to a listing.
 - Public contact priority is assigned agent when agent flow is enabled, then referenced branch, then owner.
 - Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
-- Branch- and agent-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
+- Branch-, agent-, and development-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
 
 ### Changed
 
@@ -35,7 +38,6 @@
 
 ### Planned Follow-ups
 
-- Dedicated new-development/project support.
 - Additional listing attributes.
 
 These planned items do not introduce XML elements or validation rules yet.

@@ -281,7 +281,29 @@ function processListingBatch(batch):
       <verification></verification>
     </agent>
   </agents>
+  <developments>
+    <development>
+      <id></id>
+      <name></name>
+      <developer_name></developer_name>
+      <description></description>
+      <construction_stage></construction_stage>
+      <estimated_completion_at></estimated_completion_at>
+      <city></city>
+      <pin_map>
+        <latitude></latitude>
+        <longitude></longitude>
+        <formatted_address></formatted_address>
+      </pin_map>
+      <images>
+        <image>
+          <url></url>
+        </image>
+      </images>
+    </development>
+  </developments>
   <listing>
+    <development_id></development_id>
     <branch_id></branch_id>
     <agent_id></agent_id>
     <!-- Listing fields -->
@@ -291,7 +313,7 @@ function processListingBatch(batch):
 
 ### Feed Version
 
-Version 2 adds branch-level ownership, agent information, and feed-wide owner settings. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only owner settings, `<branches>`, `<agents>`, `<branch_id>`, or `<agent_id>` elements.
+Version 2 adds branch-level ownership, agent information, new developments, and feed-wide owner settings. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only owner settings, `<branches>`, `<agents>`, `<developments>`, `<branch_id>`, `<agent_id>`, or `<development_id>` elements.
 
 ### Owner Information
 
@@ -456,6 +478,86 @@ If `<agents>` is omitted, or if a listing does not contain `<agent_id>`, no spec
 - Required: `false`
 - Description: Free-form agent verification information, such as a real estate licence or registration number. Example: `Lic. No 1234-567E`.
 
+### New Development Information (version 2)
+
+The `<developments>` block is optional and contains new-build projects referenced by listings. Each `<development>` must have an `id` and a `name`. A feed may define any number of developments.
+
+Each sellable property remains a separate `<listing>`. Common project information belongs to `<development>`, while price, area, floor, bedrooms, availability, contacts, and other unit-specific data remain on the listing. Listing values are authoritative and are not implicitly inherited from the development.
+
+```xml
+<developments>
+  <development>
+    <id>sunset-residences-block-a</id>
+    <name>Sunset Residences — Block A</name>
+    <developer_name>Example Development Ltd</developer_name>
+    <description>New residential development in Limassol.</description>
+    <construction_stage>under_construction</construction_stage>
+    <estimated_completion_at>2027-06-30</estimated_completion_at>
+    <city>Limassol</city>
+    <pin_map>
+      <latitude>34.700000</latitude>
+      <longitude>33.050000</longitude>
+      <formatted_address>Limassol, Cyprus</formatted_address>
+    </pin_map>
+    <images>
+      <image>
+        <url>https://cdn.example.com/developments/sunset-a.jpg</url>
+      </image>
+    </images>
+  </development>
+</developments>
+```
+
+#### development.id
+- Type: string
+- Required: `true`
+- Description: Stable development identifier from the feed provider's system. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different development.
+
+#### development.name
+- Type: string
+- Required: `true`
+- Description: Public development name. Include the block name here when the project contains independently represented blocks.
+
+#### development.developer_name
+- Type: string
+- Required: `false`
+- Description: Public name of the property developer. This is descriptive project information and does not affect listing ownership or contact priority.
+
+#### development.description
+- Type: string
+- Required: `false`
+- Description: Plain-text development description without HTML. English, Greek, and Russian are accepted; use only one language in a single value.
+
+#### development.construction_stage
+- Type: enum
+- Required: `false`
+- Values: `off_plan`, `under_construction`, `new_build`
+- Description: Current stage of the development.
+
+#### development.estimated_completion_at
+- Type: date (YYYY-MM-DD)
+- Required: `false` (`true` when `construction_stage` is `off_plan` or `under_construction`)
+- Description: Estimated completion date for the development.
+
+#### development.city
+- Type: enum
+- Required: `false`
+- Description: Development municipality. Uses the same allowed values as listing `<city>`.
+
+#### development.pin_map
+- Type: object
+- Required: `false`
+- Description: Development latitude, longitude, and formatted address. Uses the same structure and coordinate rules as listing `<pin_map>`.
+
+#### development.images
+- Type: collection
+- Required: `false`
+- Description: Public development image URLs. Uses the same `<images><image><url>` structure and image requirements as listing images.
+
+#### Representing Blocks
+
+Version 2 does not define separate `<blocks>` or `<buildings>` elements. If a project contains multiple blocks that need to be distinguished, represent each block as a separate `<development>` and include the block in its `id`, its `name`, or both. Listings then reference the appropriate block through `<development_id>`.
+
 ### Listing Contact Priority
 
 The agency displayed for a listing is its referenced branch when `<branch_id>` is present and valid; otherwise it is `<owner>`. Public contact details are selected in this order:
@@ -467,6 +569,11 @@ The agency displayed for a listing is its referenced branch when `<branch_id>` i
 When `<agent_flow_enabled>` is `0`, the first rule is skipped even if the listing contains `<agent_id>`.
 
 ### Listing Fields
+
+#### development_id
+- Type: string
+- Required: `false`
+- Description: ID of the new development containing the listing. When present, it must exactly match a `<developments><development><id>` value in the same feed. If omitted, the listing is treated as a standalone property. This field does not affect listing ownership or contact priority.
 
 #### branch_id
 - Type: string
@@ -1128,11 +1235,13 @@ xmlstarlet val your-feed.xml
 - [ ] Optional owner settings use boolean `1` or `0`
 - [ ] Optional `<branches>` block uses unique, non-empty branch IDs
 - [ ] Optional `<agents>` block uses unique, non-empty agent IDs
+- [ ] Optional `<developments>` block uses unique, non-empty development IDs
 - [ ] At least one `<listing>` element
 
 **✅ Every Listing Contains:**
 - [ ] Optional `<branch_id>` matches a branch declared in the same feed; when omitted, the listing belongs to `<owner>`
 - [ ] Optional `<agent_id>` matches an agent declared in the same feed
+- [ ] Optional `<development_id>` matches a development declared in the same feed
 - [ ] Unique numeric `<id>`
 - [ ] String `<ref>` (your reference code)
 - [ ] Valid `<status>` (typically "active")
@@ -1156,12 +1265,9 @@ xmlstarlet val your-feed.xml
 
 ## Version 2 Roadmap
 
-The following v2 work is planned but is not part of the current XML contract yet:
+Additional listing attributes are planned for a follow-up v2 revision but are not part of the current XML contract yet.
 
-- Dedicated new-development/project support beyond the existing listing-level `construction_stage` fields.
-- Additional listing attributes.
-
-No placeholder XML elements are reserved for these features. Their structures and validation rules will be added in follow-up revisions before they are accepted in production feeds.
+No placeholder XML elements are reserved for this work. The fields and validation rules will be added in a follow-up revision before they are accepted in production feeds.
 
 ### Common Structure Errors
 

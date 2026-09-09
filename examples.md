@@ -44,8 +44,30 @@ This page contains comprehensive XML feed examples covering all major property t
       <verification>Lic. No 1234-567E</verification>
     </agent>
   </agents>
+  <developments>
+    <development>
+      <id>sunset-residences-block-a</id>
+      <name>Sunset Residences — Block A</name>
+      <developer_name>Example Development Ltd</developer_name>
+      <description>New residential development in Limassol.</description>
+      <construction_stage>under_construction</construction_stage>
+      <estimated_completion_at>2027-06-30</estimated_completion_at>
+      <city>Limassol</city>
+      <pin_map>
+        <latitude>34.700000</latitude>
+        <longitude>33.050000</longitude>
+        <formatted_address>Limassol, Cyprus</formatted_address>
+      </pin_map>
+      <images>
+        <image>
+          <url>https://cdn.example.com/developments/sunset-a.jpg</url>
+        </image>
+      </images>
+    </development>
+  </developments>
   <listing>
     <!-- Default -->
+    <development_id>sunset-residences-block-a</development_id>
     <branch_id/>
     <agent_id/>
     <id/>
