@@ -19,6 +19,8 @@ This page contains comprehensive XML feed examples covering all major property t
     <whatsapp_number/>
     <phone_number/>
     <email/>
+    <show_approximate_location>0</show_approximate_location>
+    <agent_flow_enabled>1</agent_flow_enabled>
   </owner>
   <branches>
     <branch>

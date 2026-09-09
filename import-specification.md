@@ -187,6 +187,8 @@ Follow these best practices to ensure successful feed processing and optimal lis
     <whatsapp_number></whatsapp_number>
     <phone_number></phone_number>
     <email></email>
+    <show_approximate_location></show_approximate_location>
+    <agent_flow_enabled></agent_flow_enabled>
   </owner>
   <branches>
     <branch>
@@ -220,11 +222,11 @@ Follow these best practices to ensure successful feed processing and optimal lis
 
 ### Feed Version
 
-Version 2 adds branch-level ownership and agent information. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only `<branches>`, `<agents>`, `<branch_id>`, or `<agent_id>` elements.
+Version 2 adds branch-level ownership, agent information, and feed-wide owner settings. Version 1 feeds remain valid when submitted with `<feed_version>1</feed_version>` and must not use the v2-only owner settings, `<branches>`, `<agents>`, `<branch_id>`, or `<agent_id>` elements.
 
 ### Owner Information
 
-The `<owner>` block contains information about the organization that owns the feed and its branches. It remains unchanged from version 1. All fields are optional.
+The `<owner>` block contains information about the organization that owns the feed and its branches. Version 2 retains the version 1 identity and contact fields and adds two optional feed-wide settings. All fields are optional.
 
 **Important**: If owner information is provided from external systems during integration, this data can be updated and changed in the RERA.CY system. When syncing from external platforms, the owner details may be modified in RERA based on the latest information from the integrated system.
 
@@ -262,6 +264,18 @@ The `<owner>` block contains information about the organization that owns the fe
 - Type: string
 - Required: `false`
 - Description: Contact email address.
+
+#### show_approximate_location
+- Type: boolean (`1`/`0`)
+- Required: `false`
+- Default: `0`
+- Description: Controls public location display for every listing in the feed. Set to `1` to show users an approximate location instead of the exact location, or `0` to show the exact location. Exact coordinates are still required in each listing's `<pin_map>`; this setting changes presentation only.
+
+#### agent_flow_enabled
+- Type: boolean (`1`/`0`)
+- Required: `false`
+- Default: `0`
+- Description: Controls whether listings may display both the agency and an assigned agent. Set to `1` to use valid listing `<agent_id>` references and make agent contacts primary. Set to `0` to display only the agency; any `<agent_id>` values are then ignored for public display.
 
 ### Branch Information (version 2)
 
@@ -372,6 +386,16 @@ If `<agents>` is omitted, or if a listing does not contain `<agent_id>`, no spec
 - Type: string
 - Required: `false`
 - Description: Free-form agent verification information, such as a real estate licence or registration number. Example: `Lic. No 1234-567E`.
+
+### Listing Contact Priority
+
+The agency displayed for a listing is its referenced branch when `<branch_id>` is present and valid; otherwise it is `<owner>`. Public contact details are selected in this order:
+
+1. If `<agent_flow_enabled>` is `1` and the listing has a valid `<agent_id>`, the agent's contacts are primary. The selected agency (branch or owner) is also displayed.
+2. Otherwise, if the listing has a valid `<branch_id>`, the branch contacts are used.
+3. Otherwise, the owner contacts are used.
+
+When `<agent_flow_enabled>` is `0`, the first rule is skipped even if the listing contains `<agent_id>`.
 
 ### Listing Fields
 
@@ -1032,6 +1056,7 @@ xmlstarlet val your-feed.xml
 - [ ] Root `<root>` element containing all content
 - [ ] RERA version block: `<rera><feed_version>2</feed_version></rera>`
 - [ ] Owner information block `<owner>` (all fields optional)
+- [ ] Optional owner settings use boolean `1` or `0`
 - [ ] Optional `<branches>` block uses unique, non-empty branch IDs
 - [ ] Optional `<agents>` block uses unique, non-empty agent IDs
 - [ ] At least one `<listing>` element
