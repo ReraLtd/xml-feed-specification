@@ -1,62 +1,54 @@
-# RERA XML feed specification
+# RERA XML Feed Specification v2
 
-## The New Standard for Real Estate Integration
+RERA XML v2 is an open, reusable specification for exchanging listings together with the real estate business context around them: developments, units, owners, branches, and agents.
 
-RERA XML Feed isn't just another property listing format—it's the most comprehensive and sophisticated real estate data specification available in Cyprus and across Europe. Built from the ground up for modern real estate operations, our feed combines unmatched depth with developer-friendly implementation.
+It is built for production-scale synchronization rather than simple one-off listing exports.
 
-## Unparalleled Depth & Coverage
+## What Makes Version 2 Different
 
-**🏆 Most Comprehensive Attribute Set in Europe**
-- Over 100+ property attributes covering every conceivable detail
-- Separate optimized schemas for residential and commercial properties  
-- Advanced features like smart home technology, accessibility options, and sustainability ratings
-- Planning zone integration and development potential indicators
+- **First-class developments** — connect detailed sellable units to projects through `development_id`.
+- **Persistent unit lifecycle** — archive unavailable units from active search while retaining them inside their development as unavailable.
+- **Multi-branch organizations** — declare reusable branch identities, verification, logos, and contacts.
+- **Agent assignments** — link agents to listings and developments without repeating their contact data.
+- **Predictable contact routing** — assigned agent when enabled, then referenced branch, then feed owner.
+- **Location privacy** — provide accurate coordinates while choosing exact or approximate public display.
+- **Large feeds without pagination** — use complete snapshots, streaming XML parsing, and queued worker batches.
+- **Fingerprint-based synchronization** — detect changes in listing data, attributes, photos, and text without requiring timestamps.
+- **More than 60 active typed attributes** — residential and commercial details, amenities, zoning, accessibility, and more.
 
-**🌍 Complete Property Ecosystem**
-- Single feed handles residential, commercial, sales, and rentals
-- Version 2 supports multiple branches, agents, and new developments with per-listing references
-- From studio apartments to commercial complexes and land plots
-- Covers entire property lifecycle: off-plan to resale
+## A Complete but Simple Data Model
 
-## Developer Experience That Sets Us Apart
+Each sellable or rentable property remains a standalone `<listing>`. Optional references connect it to the wider model:
 
-**📚 Best-in-Class Documentation**
-- Comprehensive specification with real-world examples for every property type
-- Step-by-step integration guides with code samples
-- Interactive examples and validation tools
-- Multi-language support with automatic content translation
+```xml
+<listing>
+  <development_id>sunset-residences-block-a</development_id>
+  <branch_id>limassol-main</branch_id>
+  <agent_id>agent-42</agent_id>
+  <!-- Complete property data -->
+</listing>
+```
 
-**🔧 Coming Soon: Online Feed Validator**
-We're developing an advanced online validation tool that will allow developers to test their feeds in real-time, providing instant feedback and integration verification. This validator will be integrated directly into your development workflow, making RERA XML the most developer-friendly real estate API in the market.
+Projects with multiple blocks do not require another hierarchy. Represent each block as its own development and include the block in its `id`, `name`, or both.
 
-## Technical Excellence
+## Designed for High-Volume Synchronization
 
-**⚡ Built for Scale**
-- Optimized XML structure for fast parsing and processing
-- UTF-8 support for seamless multilingual content
-- Robust error handling and validation feedback
-- Enterprise-grade reliability and performance
+Publishers expose a complete XML snapshot at a stable URL and regenerate it in a background job every hour or more frequently. Consumers download it to temporary storage, stream individual listing elements, process bounded batches, and compare deterministic fingerprints.
 
-**🔗 Future-Proof Architecture** 
-- Extensible design ready for emerging property technologies
-- API-first approach with webhook support planned
-- Integration with major European MLS systems
-- Blockchain-ready for future property tokenization
+This design handles large inventories without protocol-level pagination or loading the full XML document into memory.
 
-## Market Leadership
+## Coverage
 
-**📈 The European Standard**
-While other platforms offer basic property feeds, RERA XML Feed is positioning itself as the definitive European real estate data standard. Our specification addresses real-world complexities that simpler systems ignore:
+- Residential and commercial properties.
+- Sale and rent workflows.
+- Developments, active units, and archived unavailable units.
+- Owners, branches, agents, and contact priority.
+- English, Greek, and Russian content.
+- Images, floor plans, video, and virtual tours.
+- Backward compatibility for version 1 feeds.
 
-- Complex pricing structures (VAT handling, negotiable pricing, deposits)
-- Detailed location data with Cyprus-specific validation
-- Professional vs. consumer presentation options
-- Advanced search and filtering capabilities
+## Documentation
 
-## Join the Revolution
-
-Real estate technology is evolving rapidly, and RERA XML Feed is leading this transformation. By adopting our specification now, you're not just solving today's integration challenges—you're positioning your platform for the future of European real estate.
-
-**Ready to integrate?** Our [comprehensive documentation](https://xml.rera.cy/import-specification) and [practical examples](https://xml.rera.cy/examples) will get you up and running in hours, not weeks.
-
-**Need help?** Our technical team provides world-class support to ensure your integration success.
+- [Complete specification](https://xml.rera.cy/import-specification)
+- [XML examples](https://xml.rera.cy/examples)
+- Technical support: `it@rera.cy`

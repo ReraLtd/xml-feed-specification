@@ -1,5 +1,25 @@
 # XML Import Specification
 
+RERA XML v2 is more than a listing export. It is an open, reusable model for exchanging properties together with their developments, unit availability, organizational ownership, contact routing, and large-scale synchronization behavior.
+
+## What's New in Version 2
+
+**Developments and Detailed Units**: Define reusable projects through `<developments>` and connect each sellable unit with `<development_id>`. A unit keeps the full detail of a normal listing.
+
+**Availability That Preserves Project History**: When a unit disappears from a successfully processed complete snapshot, it is archived from active search but remains visible inside its development as unavailable.
+
+**Owner, Branch, and Agent Hierarchy**: Model multi-branch organizations and reusable agents directly in the feed. Listings and developments can select their responsible branch and agent without duplicating contact data.
+
+**Predictable Contact Routing**: Contacts resolve in a documented order: assigned agent when agent flow is enabled, then referenced branch, then feed owner.
+
+**Privacy-Aware Locations**: Supply accurate coordinates while controlling whether users see the exact or an approximate public location.
+
+**Large Feeds Without Pagination**: Publish complete snapshots and process them with streaming XML readers, bounded worker batches, and atomic feed updates.
+
+**Fingerprint-Based Change Detection**: Compare listing data, attributes, photos, and text content directly. The optional `created_at` and `updated_at` fields are not required to detect updates.
+
+Together, these capabilities make the specification suitable not only for RERA integrations, but also as a practical foundation for portals, CRMs, agencies, developers, and other companies building their own real estate data pipelines.
+
 ## Getting Started
 
 Welcome to the RERA XML Import Specification! This document provides everything you need to create compliant property listing feeds for the Cyprus Real Estate system.
@@ -27,7 +47,10 @@ Before you begin, ensure you have:
 ### What You'll Learn
 
 - XML feed structure and required elements
+- Development and unit lifecycle modeling
+- Owner, branch, and agent contact routing
 - Property types and their specific attributes 
+- Streaming processing for large complete snapshots
 - Image handling and CDN integration
 - Validation and testing procedures
 - Common integration issues and solutions
@@ -70,9 +93,15 @@ The specification covers all major property categories in Cyprus:
 
 ### Key Features
 
-**Comprehensive Attribute System**: Over 100+ attributes covering everything from basic details (price, area, location) to specific amenities (smart home features, pet policies, parking types).
+**Comprehensive Attribute System**: More than 60 active typed attributes covering everything from basic details to amenities, planning zones, accessibility, and commercial features.
 
 **Flexible Structure**: Required core fields ensure data integrity, while extensive optional attributes let you showcase unique property features.
+
+**Development and Unit Lifecycle**: Connect listings to new developments while preserving unavailable units as part of the public project history.
+
+**Organizational Contact Model**: Represent owners, branches, and agents once, then assign them independently to listings and developments.
+
+**Built for Large Inventories**: Complete snapshots, streaming parsing, queued batches, and fingerprint-based change detection remove the need for feed pagination.
 
 **Multi-language Support**: Descriptions in English, Greek, or Russian with automatic translation to other languages.
 
