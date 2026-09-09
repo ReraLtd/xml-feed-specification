@@ -155,14 +155,83 @@ Follow these best practices to ensure successful feed processing and optimal lis
 ❌ **Missing Images**: Include at least 3-5 quality property photos  
 ❌ **Inconsistent Pricing**: Ensure price matches currency and market expectations  
 
-### Performance Optimization
+## Processing Large XML Feeds
 
-- **Feed Size**: Keep individual feeds under 50MB for faster processing
-- **Batch Updates**: Group related changes together rather than frequent small updates  
-- **Image Optimization**: Compress images appropriately while maintaining quality
-- **Caching**: Implement proper image CDN caching for faster load times
+The XML feed is designed to work as a complete snapshot, including for large inventories. Do not add pagination or require consumers to load the whole document into memory. Large feeds should be handled with streaming XML parsing.
 
-### Testing Recommendations
+### How RERA Processes Large XML Feeds
+
+RERA uses the following reference pipeline. Companies reusing this standard can use the same architecture:
+
+1. A scheduled import downloads the complete XML file to temporary storage. The response is written directly to disk rather than buffered entirely in memory.
+2. Feed metadata is read once, then `<listing>` elements are collected incrementally with a streaming XML reader.
+3. Listings are grouped into batches of 50 and placed on a processing queue.
+4. Queue workers validate, normalize, and process each batch independently.
+5. Temporary files are removed after the feed has been read, and the import run is completed only after its queued work finishes.
+
+This keeps memory usage bounded by the streaming parser and batch size instead of the total feed size. The value of 50 is RERA's reference worker batch size, not a required part of the XML format; another consumer may tune it for its own infrastructure.
+
+### Change Detection
+
+RERA does not rely on `<created_at>` or `<updated_at>` to detect changes. It stores and compares deterministic fingerprints for each listing. These fingerprints cover:
+
+- Core listing data and attributes.
+- Photo URLs.
+- Text content (`title` and `description`).
+
+This allows a consumer to identify what changed and avoid repeating unaffected work. Timestamps are therefore optional metadata. Consumers should not reject a listing because either timestamp is absent, and should not use timestamps as their only change-detection mechanism.
+
+### Minimal Consumer Skeleton
+
+The following pseudocode intentionally shows only the XML processing model:
+
+```text
+function importXmlFeed(feedUrl):
+    temporaryFile = downloadToTemporaryFile(feedUrl)
+
+    try:
+        metadata = readFeedMetadata(temporaryFile)
+        batch = []
+
+        for listing in streamElements(temporaryFile, "listing"):
+            batch.append({ metadata, listing })
+
+            if batch.size == 50:
+                enqueueListingBatch(batch)
+                batch = []
+
+        if batch is not empty:
+            enqueueListingBatch(batch)
+    finally:
+        deleteTemporaryFile(temporaryFile)
+
+function processListingBatch(batch):
+    for item in batch:
+        listing = validateAndNormalize(item)
+        fingerprints = buildFingerprints(
+            listingData = listing.coreData,
+            attributes = listing.attributes,
+            photos = listing.imageUrls,
+            text = [listing.title, listing.description]
+        )
+
+        changes = compareWithStoredFingerprints(listing.id, fingerprints)
+
+        if changes.any:
+            updateChangedParts(listing, changes)
+            storeFingerprints(listing.id, fingerprints)
+```
+
+### Feed Publisher Recommendations
+
+- Generate the feed in a background job every hour or more frequently when fresher listings are required.
+- Publish a complete snapshot at a stable URL. Pagination is not needed or recommended for this XML format.
+- Write the new feed to a temporary file and replace the published file atomically, so consumers never download a partially generated document.
+- Prevent overlapping generator runs, especially when generation can take longer than its schedule interval.
+- Keep image binaries outside the XML and provide stable public image URLs. Optimize and cache those images independently.
+- Keep listing IDs stable between runs so consumers can compare records reliably.
+
+## Testing Recommendations
 
 1. **Start Small**: Test with 2-3 properties before full integration
 2. **Validate Structure**: Use XML validation tools before submission
@@ -521,13 +590,13 @@ When `<agent_flow_enabled>` is `0`, the first rule is skipped even if the listin
 
 #### created_at
 - Type: datetime (YYYY-MM-DD HH:MM:SS)
-- Required: `true`
-- Description: Feed item creation timestamp.
+- Required: `false`
+- Description: Original creation timestamp from the source system, when available. It is informational and is not required for change detection.
 
 #### updated_at
 - Type: datetime (YYYY-MM-DD HH:MM:SS)
-- Required: `true`
-- Description: Last update timestamp.
+- Required: `false`
+- Description: Last update timestamp from the source system, when available. It is informational and is not required for change detection.
 
 #### title
 - Type: string
@@ -1071,7 +1140,6 @@ xmlstarlet val your-feed.xml
 - [ ] Enum `<offer_type>` (residential/commercial)
 - [ ] Numeric `<price>` and `<currency>`
 - [ ] Numeric `<full_area>`
-- [ ] ISO datetime `<created_at>` and `<updated_at>`
 - [ ] Text `<description>`
 - [ ] Enum `<city>` (valid Cyprus municipality)
 - [ ] Pin map with latitude, longitude, formatted_address
@@ -1080,7 +1148,7 @@ xmlstarlet val your-feed.xml
 
 **✅ Data Format Validation:**
 - [ ] Dates in YYYY-MM-DD format
-- [ ] Datetimes in YYYY-MM-DD HH:MM:SS format
+- [ ] Optional datetimes, when supplied, use YYYY-MM-DD HH:MM:SS format
 - [ ] Numbers are valid (not text, not empty)
 - [ ] GPS coordinates within Cyprus bounds
 - [ ] Currency is "EUR"

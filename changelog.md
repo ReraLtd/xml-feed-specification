@@ -27,6 +27,12 @@
 - Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
 - Branch- and agent-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
 
+### Changed
+
+- `<created_at>` and `<updated_at>` are optional. RERA detects changes by comparing stored fingerprints for listing data, attributes, photos, and text content.
+- Large XML feeds are consumed as complete snapshots with streaming parsing and queued worker batches of 50 listings; pagination is not required.
+- Feed publishers should regenerate their XML in a background job every hour or more frequently and publish updates atomically.
+
 ### Planned Follow-ups
 
 - Dedicated new-development/project support.

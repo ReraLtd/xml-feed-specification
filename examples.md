@@ -222,7 +222,7 @@ Each example demonstrates:
 - All coordinates are within Cyprus bounds (latitude 34.520948–35.712796, longitude 32.211971–34.608660)
 - Prices reflect realistic market ranges for different property types and locations
 - Energy classes, planning zones, and other enums use only valid specification values
-- Each listing includes creation and update timestamps
+- Example listings include optional creation and update timestamps
 - Image URLs follow the CDN pattern with proper large/medium/small suffix support
 
 ## Customization Guide
@@ -235,7 +235,7 @@ When adapting these examples for your feed:
 4. **Adjust Pricing**: Set realistic prices for your market position
 5. **Update Images**: Replace with your actual CDN URLs or image hosting solution  
 6. **Customize Descriptions**: Write compelling, accurate property descriptions
-7. **Set Proper Timestamps**: Use actual creation and modification dates
+7. **Add Timestamps When Available**: Optional `created_at` and `updated_at` values should use actual source-system dates
 8. **Review Attributes**: Include only relevant attributes for each specific property
 
 **Note on External Integrations**: If your feed comes from an external system integration, the owner information can be updated and changed in RERA.CY based on the data provided by the external platform during synchronization.
