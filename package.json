@@ -6,13 +6,29 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "mcp": "node mcp/server.mjs",
+    "test:mcp": "node --test mcp/*.test.mjs"
   },
-  "keywords": ["rera", "xml", "feed", "specification", "real estate", "property"],
+  "keywords": [
+    "rera",
+    "xml",
+    "feed",
+    "specification",
+    "real estate",
+    "property"
+  ],
   "author": "Emil Rakhmatullin <it@rera.cy>",
   "license": "ISC",
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "pnpm@10.6.3",
   "devDependencies": {
     "vitepress": "2.0.0-alpha.12"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.5.4"
   }
 }
