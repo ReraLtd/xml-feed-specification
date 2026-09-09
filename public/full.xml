@@ -20,16 +20,7 @@
       <whatsapp_number>+35799123456</whatsapp_number>
       <phone_number>+35725123456</phone_number>
       <email>limassol@example.com</email>
-      <verification>
-        <item>
-          <type>company_registration_number</type>
-          <value>HE 123456</value>
-        </item>
-        <item>
-          <type>real_estate_license</type>
-          <value>AA 987</value>
-        </item>
-      </verification>
+      <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
     </branch>
   </branches>
   <listing>

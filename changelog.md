@@ -9,12 +9,14 @@
 - Optional `<branches>` collection for offices, brands, or operational units owned by the feed owner.
 - Required `id` and `name` fields for each declared branch.
 - Optional branch logo, WhatsApp number, call phone number, and email.
-- Extensible branch verification entries expressed as `type` and `value` pairs.
+- Optional free-form branch verification string for company registration, licence, and similar information.
 - Optional listing-level `<branch_id>` referencing the branch responsible for a listing.
 
 ### Compatibility
 
 - The `<owner>` block remains unchanged and represents the owner of the feed and its branches.
+- The `<branches>` block is optional. A listing without `<branch_id>` belongs to `<owner>`, even when other listings in the feed reference branches.
+- Branch IDs accept any non-empty string representation, including bigint values, hashes, and slugs, and are used only to determine listing ownership.
 - Version 1 feeds remain supported when they declare `<feed_version>1</feed_version>`.
 - Branch-related elements are available only in feeds declaring `<feed_version>2</feed_version>`.
 

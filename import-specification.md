@@ -196,12 +196,7 @@ Follow these best practices to ensure successful feed processing and optimal lis
       <whatsapp_number></whatsapp_number>
       <phone_number></phone_number>
       <email></email>
-      <verification>
-        <item>
-          <type></type>
-          <value></value>
-        </item>
-      </verification>
+      <verification></verification>
     </branch>
   </branches>
   <listing>
@@ -258,7 +253,9 @@ The `<owner>` block contains information about the organization that owns the fe
 
 ### Branch Information (version 2)
 
-The optional `<branches>` block contains the offices, brands, or operational units managed by the feed owner. Each `<branch>` must have an `id` and a `name`. A feed may define any number of branches.
+The `<branches>` block is optional and contains the offices, brands, or operational units managed by the feed owner. Each `<branch>` must have an `id` and a `name`. A feed may define any number of branches.
+
+Branches only determine listing ownership. If `<branches>` is omitted, or if a listing does not contain `<branch_id>`, the `<owner>` is considered the owner of that listing. This also applies when branches are declared but only some listings reference them.
 
 ```xml
 <branches>
@@ -269,16 +266,7 @@ The optional `<branches>` block contains the offices, brands, or operational uni
     <whatsapp_number>+35799123456</whatsapp_number>
     <phone_number>+35725123456</phone_number>
     <email>limassol@example.com</email>
-    <verification>
-      <item>
-        <type>company_registration_number</type>
-        <value>HE 123456</value>
-      </item>
-      <item>
-        <type>real_estate_license</type>
-        <value>AA 987</value>
-      </item>
-    </verification>
+    <verification>Reg. no HE123456, Lic. No 1234-567E</verification>
   </branch>
 </branches>
 ```
@@ -286,7 +274,7 @@ The optional `<branches>` block contains the offices, brands, or operational uni
 #### branch.id
 - Type: string
 - Required: `true`
-- Description: Stable branch identifier from the feed provider's system. It must be unique within the feed and must not be reused for a different branch.
+- Description: Stable branch identifier from the feed provider's system, used only to determine which branch owns a listing. Any non-empty string is accepted, including a bigint serialized as text, a hash, or a slug. It must be unique within the feed and must not be reused for a different branch.
 
 #### branch.name
 - Type: string
@@ -314,16 +302,16 @@ The optional `<branches>` block contains the offices, brands, or operational uni
 - Description: Branch contact email address.
 
 #### branch.verification
-- Type: collection
+- Type: string
 - Required: `false`
-- Description: Verification information for the branch. Each `<item>` contains a string `<type>` and `<value>`. Recommended types are `company_registration_number` and `real_estate_license`; other types are allowed for jurisdiction-specific identifiers. A type must not occur more than once within the same branch.
+- Description: Free-form branch verification information, such as a company registration number, real estate licence, or both. Example: `Reg. no HE123456, Lic. No 1234-567E`.
 
 ### Listing Fields
 
 #### branch_id
 - Type: string
 - Required: `false`
-- Description: ID of the branch responsible for the listing. When present, it must exactly match a `<branches><branch><id>` value in the same feed. Omit it when responsibility stays at feed-owner level.
+- Description: ID of the branch that owns the listing. It is used only to determine listing ownership and must exactly match a `<branches><branch><id>` value in the same feed. If omitted, the `<owner>` owns the listing, including when the feed declares other branches.
 
 #### id
 - Type: number
@@ -976,7 +964,7 @@ xmlstarlet val your-feed.xml
 - [ ] At least one `<listing>` element
 
 **✅ Every Listing Contains:**
-- [ ] Optional `<branch_id>` matches a branch declared in the same feed
+- [ ] Optional `<branch_id>` matches a branch declared in the same feed; when omitted, the listing belongs to `<owner>`
 - [ ] Unique numeric `<id>`
 - [ ] String `<ref>` (your reference code)
 - [ ] Valid `<status>` (typically "active")
